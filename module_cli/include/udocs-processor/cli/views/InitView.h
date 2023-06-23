@@ -36,6 +36,8 @@ class InitView : public virtual View {
 
   virtual void SetOrganization(std::string Organization) = 0;
 
+  virtual void SetContactMeAt(std::string ContactMeAt) = 0;
+
   virtual void SelectEngineVersion(int VersionIndex) = 0;
 
   virtual void SelectTarget(const std::string& Target) = 0;
@@ -45,6 +47,8 @@ class InitView : public virtual View {
   virtual const std::string& GetSelectedName() const = 0;
 
   virtual const std::string& GetSelectedOrganization() const = 0;
+
+  virtual const std::string& GetContactMeAt() const = 0;
 
   virtual const std::string& GetSelectedVersion() const = 0;
 
@@ -60,9 +64,5 @@ class InitView : public virtual View {
   virtual void SetDoExportPrivate(bool DoExport) = 0;
 
   virtual bool DoExportPrivate() const = 0;
-
-  virtual bool DoExit() const = 0;
-
-  virtual void SetFinished(bool IsFinished) = 0;
 };
 }  // namespace udocs_processor

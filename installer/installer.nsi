@@ -93,6 +93,15 @@ Section "!Surreal Docs Core" SecCore
   Pop $0
   WriteRegStr HKCU "Software\Medelfor\SurrealDocs" "ClientId" "$0"
 
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "" ""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "DisplayName" "Surreal Docs v${DIST_VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "DisplayVersion" "${DIST_VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "DisplayIcon" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "UninstallPath" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "InstallLocation" "$INSTDIR"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "Publisher" "Medelfor, Limited"
+
   WriteUninstaller "$INSTDIR\uninst.exe"
 SectionEnd
 
@@ -106,7 +115,7 @@ SectionEnd
 Section "NodeJS" SecNodeJS
   SetOutPath "$INSTDIR"
 
-  nsExec::ExecToStack '"node" "--version"'
+  nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c node --version'
   Pop $0
   Pop $1
 
@@ -152,7 +161,7 @@ Section "-Puppeteer" SecPup
   File "package.json"
   File "package-lock.json"
 
-  nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c npm i --prefix=$CACHE_DIR\ $CACHE_DIR\'
+  nsExec::ExecToStack '"$SYSDIR\cmd.exe" /c npm i --prefix=$CACHE_DIR $CACHE_DIR'
   Pop $0
   StrCmp $0 0 nInstallSucc 0
   StrCmp $0 1602 nInstallSucc 0
@@ -194,4 +203,13 @@ Section "Uninstall"
   RMDir /R "$INSTDIR"
 
   Delete "$INSTDIR\*.*"
+
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "DisplayName"
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "DisplayVersion"
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "DisplayIcon"
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "UninstallPath"
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "UninstallString"
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "InstallLocation"
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs" "Publisher"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SurrealDocs"
 SectionEnd

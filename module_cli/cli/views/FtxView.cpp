@@ -1,6 +1,7 @@
 /* Copyright © 2022, Medelfor, Limited. All rights reserved. */
 
 #include "udocs-processor/cli/views/FtxView.h"
+#include <ftxui/component/component.hpp>
 
 #define NOLINT()
 
@@ -57,10 +58,65 @@ std::shared_ptr<ftxui::Node> udocs_processor::FtxView::WrapError(
              Gap(), paragraph(ErrorDescription) | ErroneuousColor()),
          separatorEmpty(),
          hbox({
+             Gap(), text("Available Actions") | HeadingColor()
+         }) | HeadingBackgroundColor(),
+         separatorEmpty(),
+         hbox({
+           hflow(
+             paragraph(SEND_LOGS_EXPLANATION) | ForegroundColor1())
+             | ftxui::size(WIDTH, LESS_THAN, 45),
+           separatorEmpty(),
+           separator(),
+           separatorEmpty(),
+           filler(),
+           hbox({
+             vbox({
+               filler(),
+               hbox({
+                 filler(),
+                 ftxui::text("Contact me at:")
+                     | ftxui::size(HEIGHT, LESS_THAN, 1) | ForegroundColor2(),
+                 separatorEmpty(),
+                 ContactMeAt->Render() | ftxui::size(HEIGHT, LESS_THAN, 1)
+                     | ForegroundColor1() | ftxui::size(WIDTH, GREATER_THAN, 15)
+               }),
+               filler(),
+             }) | xflex_grow,
+             vbox({
+               filler(),
+               hbox({
+                 separatorEmpty(),
+                 SendLogsButton->Render() | ForegroundColor1(),
+                 filler()
+               }),
+               filler()
+             })
+           }) | HHide(StateOfLogs != LogsState::STANDING_BY),
+           hbox({
+             filler(),
+             vbox({
+               filler(),
+               hbox({
+                 text("Sending"),
+                 ftxui::spinner(1, Frame)
+               }) | VHide(StateOfLogs != LogsState::SENDING)
+                  | ForegroundColor1(),
+               hbox({
+                 text("Thank you!")
+               }) | VHide(StateOfLogs != LogsState::SENT) | ForegroundColor1(),
+               filler()
+             }),
+             filler()
+           }) | HHide(StateOfLogs == LogsState::STANDING_BY),
+           filler(),
+         }),
+         separatorEmpty(),
+         hbox({
              Gap(), text("Logs") | HeadingColor()
          }) | HeadingBackgroundColor(),
          hflow(
              paragraph(View::GetLogFilePath()) | ForegroundColor1()),
+         separatorEmpty(),
          hbox({
              Gap(), text("Available Support") | HeadingColor()
          }) | HeadingBackgroundColor(),
@@ -110,4 +166,43 @@ ftxui::Decorator udocs_processor::FtxView::SuccessColor() const {
 
 ftxui::Decorator udocs_processor::FtxView::ErroneuousColor() const {
   return ftxui::color(ErroneuousColor_);
+}
+
+void udocs_processor::FtxView::Init() {
+  SendLogsButton = ftxui::Button("Report log", [this]() {
+    std::optional<std::string> ContactBack;
+    if (!ContactMeAtValue.empty()) {
+      ContactBack = ContactMeAtValue;
+    }
+    GetLogReporter()->ReportLogs("", std::move(ContactBack));
+    StateOfLogs = LogsState::SENDING;
+  });
+  SendLogsButton |= ftxui::CatchEvent([&](ftxui::Event Event) {
+    if (Event == ftxui::Event::Return) {
+      return true;
+    }
+    return false;
+  });
+
+  std::optional<std::string> Contact = GetLogReporter()->GetContactMeAt();
+  if (Contact) {
+    ContactMeAtValue = *Contact;
+  }
+
+  ContactMeAt = ftxui::Input(&ContactMeAtValue, "<don't contact>");
+  Components = ftxui::Container::Horizontal({ContactMeAt, SendLogsButton});
+}
+
+ftxui::Component udocs_processor::FtxView::GetComponents() const {
+  return Components;
+}
+
+void udocs_processor::FtxView::Tick() {
+  ++Frame;
+  if (StateOfLogs == LogsState::SENDING) {
+    --LogsSendRemaining;
+    if (!LogsSendRemaining) {
+      StateOfLogs = LogsState::SENT;
+    }
+  }
 }

@@ -95,12 +95,15 @@ void udocs_processor::FtxInitView::SelectSources(
 }
 
 void udocs_processor::FtxInitView::Init() {
+  FtxView::Init();
+
   using namespace ftxui; NOLINT()
 
   DoExportPrivateCheckbox = Checkbox("Export private members",
       &DoExportPrivate_);
   NameInput = Input(&Name, NAME_PLACEHOLDER);
   VersionInput = Input(&Version, VERSION_PLACEHOLDER);
+  ContactMeAtInput = Input(&ContactMeAt, CONTACT_ME_AT_PLACEHOLDER);
   OrganizationInput = Input(&Organization, ORGANIZATION_PLACEHOLDER);
   StartButton = Button(START_LABEL, [this]() {
     Cli.OnDone();
@@ -116,8 +119,8 @@ void udocs_processor::FtxInitView::Init() {
   Renderer = ftxui::Renderer(
       Container::Vertical({
        EngineVersionRadio, ConfigurationRadio, TargetRadio, NameInput,
-       VersionInput, OrganizationInput, DoExportPrivateCheckbox,
-       SourcesList, StartButton
+       VersionInput, OrganizationInput, ContactMeAtInput,
+       DoExportPrivateCheckbox, SourcesList, StartButton, GetComponents()
       }),
       [&]() {
         return WrapInWindow({
@@ -193,6 +196,14 @@ void udocs_processor::FtxInitView::Init() {
                       text("Organization:") | ForegroundColor2(),
                       separatorEmpty(),
                       OrganizationInput->Render() | ForegroundColor1()
+                    }),
+                    vbox({
+                      text("If I report a bug, contact me back at:")
+                          | ForegroundColor2(),
+                      hbox({
+                        separatorEmpty(),
+                        ContactMeAtInput->Render() | ForegroundColor1()
+                      })
                     })
                   })) | xflex_grow,
                 window(
@@ -263,6 +274,8 @@ void udocs_processor::FtxInitView::Init() {
 
 void udocs_processor::FtxInitView::Tick() {
   std::lock_guard<std::mutex> Lock{SelectionsProtection};
+
+  FtxView::Tick();
 
   ++FrameCount;
   Screen.PostEvent(ftxui::Event::Custom);
@@ -400,4 +413,12 @@ void udocs_processor::FtxInitView::SetDoExportPrivate(bool DoExport) {
 
 void udocs_processor::FtxInitView::Start() {
   Screen.Loop(Renderer);
+}
+
+const std::string &udocs_processor::FtxInitView::GetContactMeAt() const {
+  return ContactMeAt;
+}
+
+void udocs_processor::FtxInitView::SetContactMeAt(std::string ContactMeAt) {
+  this->ContactMeAt = std::move(ContactMeAt);
 }

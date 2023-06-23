@@ -29,10 +29,6 @@ class GenerateView : public virtual View {
 
   virtual void SetStatus(Status Status_, const std::string& Message) = 0;
 
-  virtual void SetFinished(bool HasFinished) = 0;
-
-  virtual bool DoExit() const = 0;
-
   std::string GetStatusString(Status Status_) const;
 
  private:

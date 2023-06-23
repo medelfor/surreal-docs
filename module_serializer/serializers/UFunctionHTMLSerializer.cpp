@@ -28,6 +28,7 @@
 #include "udocs-processor/doctree/DocNodeVisitor.h"
 #include "udocs-processor/doctree/NodeTypeChecker.h"
 #include "udocs-processor/NodesHelper.h"
+#include "udocs-processor/StringHelper.h"
 
 udocs_processor::UFunctionHTMLSerializer::UFunctionHTMLSerializer() {
   RpcModeToString.insert(
@@ -330,7 +331,7 @@ int udocs_processor::TypeExporter::Visit(BlueprintPrimitiveTypeNode &Node) {
 
   if (Type == PrimitiveType::PrimitiveType::Float ||
       Type == PrimitiveType::PrimitiveType::Double) {
-    Text = NodesHelper::FormatNumber(std::stof(DefaultValue));
+    Text = NodesHelper::FormatNumber(StringHelper::SafeStof(DefaultValue));
   } else {
     Text = DefaultValue;
   }

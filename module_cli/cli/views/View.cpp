@@ -32,3 +32,15 @@ std::string udocs_processor::View::GetNewVersionAnnouncement() const {
   return NewVersion.empty()
       ? "" : fmt::format(NEW_VERSION_PATTERN, NewVersion);
 }
+
+void udocs_processor::View::SetLogReporter(
+    std::optional<std::string> ContactMeAt,
+    std::shared_ptr<LogReporter> Reporter) {
+  this->ContactMeAt = std::move(ContactMeAt);
+  this->Reporter = Reporter;
+}
+
+std::shared_ptr<udocs_processor::LogReporter>
+    udocs_processor::View::GetLogReporter() const {
+  return Reporter;
+}

@@ -276,21 +276,6 @@ body {
     justify-content: flex-end;
 }
 
-.trial {
-    display: none;
-    background: url("../../../misc/graphics/udocs_processor/functions/TrialWatermark.svg") repeat;
-    background-size: 300px;
-    position: absolute;
-    width: 200%;
-    height: 300%;
-    top: -150%;
-    left: -50%;
-    z-index: 100;
-    transform: rotate(-45deg);
-    opacity: 0.1;
-    border-radius: 8px;
-}
-
 .pin-image {
     position: absolute;
 }
@@ -440,9 +425,4 @@ body {
 .xyz .textfield {
     margin-left: 4px;
     margin-right: 8px;
-}
-
-/* for control */
-.trial-active {
-    display: block;
 }

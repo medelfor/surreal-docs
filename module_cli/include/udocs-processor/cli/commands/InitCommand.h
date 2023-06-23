@@ -25,7 +25,8 @@ class InitCommand {
   void SaveProject(const SurrealProject& Project,
       const std::string& ProjectDir) const;
 
-  void InitializeProject(const std::string& ProjectDir) const;
+  void InitializeProject(const std::string& ProjectDir,
+      bool IsNewProject) const;
 
   void SetInstallPath(std::string InstallPath);
 

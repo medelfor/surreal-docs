@@ -64,7 +64,7 @@ class FtxGenerateView : public GenerateView, public FtxView {
   const ftxui::Color AD_1_COLOR = ftxui::Color::Turquoise2;
   const ftxui::Color AD_2_COLOR = ftxui::Color::Purple3;
 
-  static constexpr const char PRESS_TO_EXIT[] = ". Press ENTER to exit";
+  static constexpr const char PRESS_TO_EXIT[] = ". Press ESC to exit";
 
   static constexpr const char AD_0[] =
       "Need a cloud to make your docs available "

@@ -24,7 +24,7 @@ steps:
 #           'https://artifactory.dev.internal.medelfor.com/artifactory/api/conan/medelfor-central',
 #           '$$STAGES_RESULTS_DIR', 'artifacts.medelfor.com', '${BUILD_ID}', '${COMMIT_SHA}',
 #           'win64-build-machine-artifpush@avtomatikka.iam.gserviceaccount.com', '${PROJECT_ID}',
-#           'buildbot', '', 'udocs-processor:${_GS_SAVE_SEPARATE_VERSION}', 'linux', 'false', 'udocs-processor']
+#           'buildbot', '', 'udocs-processor:${_GS_SAVE_SEPARATE_VERSION}', 'linux', 'true', 'udocs-processor']
 #
 #  - name: 'gcr.io/avtomatikka/buildtoolset:latest'
 #    dir: 'scripts/cicd/buildmasterset'
@@ -84,6 +84,11 @@ steps:
   - name: 'gcr.io/avtomatikka/buildtoolset:latest'
     dir: 'scripts/cicd/buildmasterset'
     args: ['python3', 'aws/local/check_result.py', 'response.json', 'push_artifactory_udocs-processor_debug']
+
+  - name: 'gcr.io/avtomatikka/buildtoolset:latest'
+    dir: 'scripts/cicd/buildmasterset'
+    args: ['python3', 'aws/local/check_result.py', 'response.json',
+           'push_bucket_udocs-processor_dist']
 
   # the motivation behind the decision to put shutdown to the end is the following:
   # if any of `check`-stages fail then no shutdown is going to happen, henceforth no start is needed

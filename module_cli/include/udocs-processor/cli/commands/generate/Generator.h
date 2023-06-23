@@ -87,7 +87,7 @@ class Generator {
   constexpr static char URL_SEPARATOR = '/';
   constexpr static char URL_SEPARATOR_LOCAL = '+';
 
-  static const bool IS_TRIAL = false;
+  static const bool IS_TRIAL = true;
   static const bool DO_PRETTY_PRINT = false;
   static const size_t IMAGE_MAX_SIDE_SIZE = 2048;
   static const size_t MAX_IMAGE_FILESIZE = 1024 * 1024 * 4;  // 4MB

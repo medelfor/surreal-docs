@@ -134,6 +134,10 @@ std::vector<udocs_processor::ManifestEntry>
   TypeToImagesSerializer->SetResourcesPath(ResourcesPath);
   TypeToImagesSerializer->SetTypeTemplate(TypeTemplateBuffer.str());
 
+  std::unique_ptr<udocs_processor::IntegrityCheck> Checker =
+      std::make_unique<udocs_processor::IntegrityCheck>();
+  Checker->SetResourcesPath(ResourcesPath);
+
   std::unique_ptr<UTypeToStringSerializer> TypeToStringSerializer =
     std::make_unique<UTypeMarkdownSerializer>(*Cache);
   std::unique_ptr<FileDataLoader> FileDataLoader2 =
@@ -141,7 +145,8 @@ std::vector<udocs_processor::ManifestEntry>
   std::unique_ptr<JSONDocTreeSerializer> Serializer =
     std::make_unique<JSONDocTreeSerializer>(std::move(FunctionSerializer),
       std::move(TypeToImagesSerializer), std::move(TypeToStringSerializer),
-      std::move(FileDataLoader2), std::move(Cache));
+      std::move(FileDataLoader2), std::move(Cache),
+      std::move(Checker));
 
   // todo replace with a map
   Serializer->SetStatusReporter(

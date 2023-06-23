@@ -67,6 +67,40 @@ class StringHelper {
   static std::string ConvertImagePathToLocalRepresentation(
       const std::string& Image);
 
+  static std::string Embrace(const std::string& String);
+
+  static float SafeStof(const std::string& Value) {
+    try {
+      return std::stof(Value);
+    } catch (const std::exception& Exc) {
+      return 0;
+    }
+  }
+
+  static uint64_t SafeStoull(const std::string& Value) {
+    try {
+      return std::stoull(Value);
+    } catch (const std::exception& Exc) {
+      return 0;
+    }
+  }
+
+  static int64_t SafeStoll(const std::string& Value) {
+    try {
+      return std::stoll(Value);
+    } catch (const std::exception& Exc) {
+      return 0;
+    }
+  }
+
+  static double SafeStod(const std::string& Value) {
+    try {
+      return std::stod(Value);
+    } catch (const std::exception& Exc) {
+      return 0;
+    }
+  }
+
   constexpr static char REPLACEMENT_HTML_CODE[] = "&#xfffd;";
   constexpr static char SPACE_CH = ' ';
 
@@ -113,6 +147,7 @@ class StringHelper {
   constexpr static char DESCRIPTION_CONCAT_GLUE[] = "\n\n";
   constexpr static char SPACE = ' ';
   constexpr static char SPACE_STR[] = " ";
+  constexpr static char SPACE_ESCAPED[] = "` ";
   constexpr static char UNDERSCORE = '_';
 
   constexpr static int AVERAGE_WORD_IN_NAME = 6;

@@ -37,8 +37,9 @@ class UDocsProcessorConan(ConanFile):
         "ftxui/4.0.0",
         "grpc/1.50.0",
         "poco/1.12.2",
-        "libexecstream/0.0.3@medelfor/stable",
+        "termcolor/2.1.0",
         "api-proto/1.0.1+43.9cf6258d@medelfor/develop",
+        "surreal-api-proto/unspecified@medelfor/local",
         ("cli11/2.0.0", "private"),
         ("base64/0.4.0", "private"),
         "inja/3.3.0",
@@ -72,4 +73,4 @@ class UDocsProcessorConan(ConanFile):
     def package_info(self):
         self.cpp_info.libs = ["M-UDocs-Processor", "M-UDocs-Report",
             "M-UDocs-Serializer", "M-UDocs-Base", "M-UDocs-Util",
-            "M-UDocs-CLI", "M-UDocs-Telemetry"]
+            "M-UDocs-Telemetry"]

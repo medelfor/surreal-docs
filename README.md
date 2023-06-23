@@ -14,6 +14,8 @@
 
 Surreal Docs is the first all-encompassing docs generation system for Unreal Engine-powered projects. It generates documentation for Unreal Engine projects, C++ and Blueprint API references in particular. It enables users to create their own custom pages using a feature-rich dialect of Markdown. Surreal Docs seamlessly integrates with our online docs hosting - Surreal Cloud, making it easy to share the docs publicly, privately with a team or within an organization. Finally, Surreal Docs perfectly understands all UE-specific C++ features, Blueprints and easily interweaves corresponding C++ and Blueprint entities in the resulting documentation!
 
+The latest version of Surreal Docs is `1.0.4`
+
 **Table of Contents**
 
 - [Install](#install)
@@ -24,6 +26,8 @@ Surreal Docs is the first all-encompassing docs generation system for Unreal Eng
 - [Build](#build)
 - [Issues and Support](#issues-and-support)
 - [Pull requests](#pull-requests)
+- [What we're doing right now](#what-were-doing-right-now)
+- [Performance](#performance)
 - [FAQ](#faq)
 - [License](#license)
 - [Surreal Ecosystem](#surreal-ecosystem)
@@ -60,6 +64,8 @@ and the documentation you are going to generate. Surreal Docs will detect and se
 settings automatically, but you should review them and update if 
 necessary.
 
+**IMPORTANT**: you have to choose an \*Editor target, since Surreal Docs cannot be run without UE editor.
+
 On the same screen you should choose the project modules for which you want to generate documentation.
 
 After everything's finished, please click the "Done" button and wait until
@@ -95,12 +101,12 @@ Surreal Docs is intended to be used with 64-bit Windows systems.
 
 Unreal Engine support is as follows:
 
-| Unreal Engine version | Support [1]    |
-|-----------------------|----------------|
-| 4.27                  | Yes            |
-| 5.0                   | Yes            |
-| 5.1                   | Yes            |
-| 5.2                   | On the way [2] |
+| Unreal Engine version | Support [1] |
+|-----------------------|------------|
+| 4.27                  | Yes        |
+| 5.0                   | Yes        |
+| 5.1                   | Yes        |
+| 5.2                   | Yes        |
 
 You can find more info about OS and Unreal Engine compatibility on the ["Supported operating systems and Unreal Engine versions"](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/os-and-ue-support "Supported operating systems and Unreal Engine versions") page.
 
@@ -117,8 +123,6 @@ and Blueprint Graph Macros
 If you'd like Surreal Docs to support one of these features, please let us know.
 
 You can find more info about supported Unreal Engine features on the ["Support of the Unreal Engine features"](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/ue-features-support "Support of the Unreal Engine features") page.
-
-[2] ETA is June 2023.
 
 ## Telemetry
 
@@ -155,13 +159,8 @@ We're working on the build instructions and will publish them soon.
 You can find more info regarding troubleshooting on the ["Troubleshooting"](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/troubleshooting "Troubleshooting") page.
 
 If you believe there's something wrong with the product, please create an
-issue in this repository.
-
-"Surreal Docs Crypto", "Surreal Docs XL" or "Surreal Docs Crypto
-XL" licenses include Priority Customer Care plan. If you or your
-organization own one of these licenses please contact us at
-[support@medelfor.com](mailto:support@medelfor.com "Support email") with your
-license ID and problem description, we will consider the issue a high-priority.
+issue in this repository. You can also contact [support@medelfor.com](mailto:support@medelfor.com "Support email"), [@medelfor](https://twitter.com/medelfor "@medelfor") or
+[u/wcobalt](https://www.reddit.com/user/wcobalt "u/wcobalt"). We're glad to help!
 
 You can browse list of issues already being in work in our YouTrack 
 [here](https://issues.internal.medelfor.com/youtrack/issues?q=project:%20%7BSurreal%20Docs%7D "Surreal Docs WIP issues").
@@ -171,6 +170,18 @@ You can browse list of issues already being in work in our YouTrack
 Please, feel free to submit your changes to the Surreal Docs Source
 Code in pull requests for this repository. We deeply appreciate any 
 contributions made by our users!
+
+## What we're doing right now
+
+Currently, we are working on bringing support of Surreal Cloud product series to Surreal Docs CLI. The work will be finished by the end of June.
+
+## Performance
+
+At this moment, Surreal Docs is best suited to work with medium-sized projects of up to 100,000 lines of code (LOC) of header files. The volume of `.cpp` files does not matter. Larger projects are supported but require more time to be processed, and will have a bigger memory footprint.
+
+### Memory issues
+
+Regarding memory issues, during the initial "Loading documentation tree" stage, there are reports of a substantial memory consumption spike. We are aware of this problem and are working to fix it.
 
 ## FAQ
 
@@ -209,6 +220,12 @@ Studio no matter whether the project is Blueprint-only or not. You can find more
 Currently, Surreal Docs cannot be used without an Unreal Engine project, but we
 plan to add an ability to generate documentation with no attachments to UE, BP 
 or C++ in the nearest future.
+
+### How can I get rid of the watermarks on Blueprint function images?
+
+Uploading documentation to Surreal Cloud, Surreal Cloud+ or Surreal Cloud Pro, will not result in any watermarks being added to the images. Surreal Cloud and Surreal Cloud+ will be available by the end of June, and you'll be able to purchase subscriptions to them in [our store](https://store.medelfor.com "Medelfor Store").
+
+Surreal Cloud hostings offer several additional benefits, such as the use of pretty page URLs. For example, instead of something like `api+blueprint+Jetpack+90ba7e62+11c4c855.html` you will get a much more user-friendly URL like `/medelfor/showcase-1/1.1.0/en-US/api/blueprint/Jetpack/Jetpack/Blow_It_Up`. Moreover Surreal Cloud provides SEO-optimized page rendering, versioning and premium support from the Medelfor team to its subscribers.
 
 ## License
 

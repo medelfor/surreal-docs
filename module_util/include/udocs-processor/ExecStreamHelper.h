@@ -2,20 +2,22 @@
 
 #pragma once
 
-#include <exec-stream.h>
 #include <string>
+#include <vector>
 #include <functional>
 
 namespace udocs_processor {
 class ExecStreamHelper {
  public:
-  static bool ReadErrLine(std::string& Line, exec_stream_t& ExecStream);
+  struct ProcessResult {
+    int ExitCode = 0;
+    std::string Output;
+  };
 
-  static bool ReadOutLine(std::string& Line, exec_stream_t& ExecStream);
-
-  static bool IsProcessRunning(exec_stream_t& ExecStream);
+  static ProcessResult Run(const std::vector<std::string>& Arguments);
 
  private:
   static constexpr const char* NEWLINE = "\n";
+  static constexpr const char* ARGUMENTS_JOINER = "\" \"";
 };
 }  // namespace udocs_processor

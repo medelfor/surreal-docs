@@ -68,6 +68,7 @@ static constexpr const wchar_t SURDOCS_REGKEY[] =
 static constexpr const char TELEMETRY_SOURCE[] = "surdocs";
 static constexpr const char DEFAULT_CLIENT_ID[] = "johndoe";
 static constexpr const char SURREAL_DOCS_PRODUCT_ID[] = "SURDOCS";
+static constexpr const char SURREAL_JSON_PATH[] = "surdocs/surreal.json";
 
 static constexpr const char SETTINGS_FILE[] = "settings.json";
 static constexpr const char SETTINGS_API_PATH[] = "/api_address";
@@ -77,6 +78,7 @@ static constexpr const char SETTINGS_CA_CERT_DEFAULT[] =
     "certificates/ca-cert.crt";
 static constexpr const char SETTINGS_DO_USE_HTTPS_PATH[] = "/do_use_https";
 static constexpr const bool SETTINGS_DO_USE_HTTPS_DEFAULT = true;
+static constexpr const char SURREAL_CONTACT_ME_AT_PATH[] = "/contact_me_at";
 
 std::shared_ptr<spdlog::sinks::sink> SetupLogSink(const std::string& Path,
     std::string& LogAt) {
@@ -122,6 +124,32 @@ std::string LoadRootCert(const std::string& Path,
   std::stringstream Stream;
   Stream << Input.rdbuf();
   return Stream.str();
+}
+
+std::optional<std::string> LoadContactAddress(
+    std::shared_ptr<spdlog::logger> l) {
+  try {
+    std::ifstream Input{SURREAL_JSON_PATH};
+    if (!Input.good()) {
+      l->info("Can't open surreal.json, contact address is empty");
+    }
+
+    std::stringstream Stream;
+    Stream << Input.rdbuf();
+
+    nlohmann::json Data = nlohmann::json::parse(Stream.str());
+    nlohmann::json_pointer<std::string> ContactMeAtPath{
+        SURREAL_CONTACT_ME_AT_PATH};
+    if (Data.contains(ContactMeAtPath)) {
+      std::string ContactAddress = Data.at(ContactMeAtPath);
+      l->info("Using `{}` as contact address", ContactAddress);
+      return ContactAddress;
+    }
+  } catch (const std::exception& Exc) {
+    l->warn("Exception when loading contact address: {}", Exc.what());
+  }
+
+  return {};
 }
 
 int main(int Argc, char** Argv) {
@@ -253,13 +281,20 @@ int main(int Argc, char** Argv) {
       std::make_unique<udocs_processor::CppPreparer>(LoggerSink);
   CppPreparer->SetResDirectory(ResourcesPath);
   CppPreparer->SetBinDirectory(BinariesPath);
+
   std::unique_ptr<udocs_processor::GenerateCommand> GenerateCommand =
       std::make_unique<udocs_processor::GenerateCommand>(LoggerSink,
           std::move(BpPreparer), std::move(CppPreparer), std::move(Generator));
 
+  std::shared_ptr<udocs_processor::LogReporter> LogReporter =
+      std::make_shared<udocs_processor::LogReporter>(LogAt, LoggerSink,
+          BasicTelemetry);
+  LogReporter->SetContactMeAt(LoadContactAddress(l));
+
   std::unique_ptr<udocs_processor::GenerateView> InteractiveGenerateView =
       std::make_unique<udocs_processor::FtxGenerateView>();
   InteractiveGenerateView->SetLogFilePath(LogAt);
+  InteractiveGenerateView->SetLogReporter({}, LogReporter);
   std::unique_ptr<udocs_processor::GenerateView> NonInteractiveGenerateView =
       std::make_unique<udocs_processor::NonInteractiveGenerateView>(std::cout);
   NonInteractiveGenerateView->SetLogFilePath(LogAt);
@@ -292,6 +327,7 @@ int main(int Argc, char** Argv) {
 
   std::unique_ptr<udocs_processor::InitView> InteractiveInitView =
       std::make_unique<udocs_processor::FtxInitView>(*InitCLI);
+  InteractiveInitView->SetLogReporter({}, LogReporter);
   InteractiveInitView->SetLogFilePath(LogAt);
   if (NewVersion) {
     InteractiveInitView->SetNewVersion(*NewVersion);

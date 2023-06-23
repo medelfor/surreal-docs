@@ -24,8 +24,9 @@ void udocs_processor::TelemetryReporter::SetTelemetryEnabled(bool IsEnabled) {
 }
 
 void udocs_processor::TelemetryReporter::ReportTelemetryEvent(
-    const std::string &EventName, const nlohmann::json &Payload) {
-  if (!IsTelemetryEnabled) return;
+    const std::string &EventName, const nlohmann::json &Payload,
+    bool HaveUserConsent) {
+  if (!IsTelemetryEnabled && !HaveUserConsent) return;
 
   std::lock_guard<std::mutex> Lock{EventsProtector};
 
@@ -38,15 +39,13 @@ void udocs_processor::TelemetryReporter::ReportTelemetryEvent(
 }
 
 void udocs_processor::TelemetryReporter::StartReporting() {
-  if (!IsTelemetryEnabled) return;
-
   DoReport = true;
 
   Worker = std::thread([this](){
     // no weak ptr for this is okay here
     l->info("Starting telemetry reporting");
 
-    while (DoReport && IsTelemetryEnabled) {
+    while (DoReport) {
       std::this_thread::sleep_for(std::chrono::milliseconds{
         QUEUE_POLL_DELAY_MS});
       std::vector<TelemetryService::TelemetryEvent> Copy;
@@ -74,8 +73,6 @@ void udocs_processor::TelemetryReporter::StartReporting() {
 }
 
 void udocs_processor::TelemetryReporter::StopReporting() {
-  if (!IsTelemetryEnabled) return;
-
   DoReport = false;
 }
 

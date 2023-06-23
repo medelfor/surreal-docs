@@ -32,6 +32,10 @@ rm -rf dist_conan
 rm -rf dist_tests
 rm -rf dist_static
 
+# build resources
+gulp default -f ../gulpfile.js --destination build_release/dist --auto_res_prefix build_release
+Check-ExitCode
+
 # build dist, tests, conan package
 cmake -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=dist -DDO_BUILD_TESTS=ON \
       -DDO_INSTALL_AS_CONAN_PACKAGE=ON -DCONAN_PACKAGE_INSTALL_POSTFIX=_conan \
@@ -42,10 +46,6 @@ cmake --build . --config Release
 Check-ExitCode
 
 cmake --install . --config Release
-Check-ExitCode
-
-# build resources
-gulp default -f ../gulpfile.js --destination build_release/dist --auto_res_prefix build_release
 Check-ExitCode
 
 # clean symlinks to script modules in order for them not to be packaged

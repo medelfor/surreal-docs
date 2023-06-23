@@ -40,3 +40,18 @@ void udocs_processor::BasicTelemetry::ReportFinish(
 
   Reporter->ReportTelemetryEvent(EVENT_FINISH, Payload);
 }
+
+void
+udocs_processor::BasicTelemetry::ReportLog(std::string Command, std::string Log,
+    std::optional<std::string> ContactMeBackAt) {
+  nlohmann::json Payload;
+  Payload[PAYLOAD_COMMAND] = std::move(Command);
+  Payload[PAYLOAD_VERSION] = Version;
+  Payload[PAYLOAD_LOG] = std::move(Log);
+  Payload[PAYLOAD_CONTACT_ME_BACK_AT] = nullptr;
+  if (ContactMeBackAt) {
+    Payload[PAYLOAD_CONTACT_ME_BACK_AT] = *ContactMeBackAt;
+  }
+
+  Reporter->ReportTelemetryEvent(EVENT_LOG, Payload, true);
+}

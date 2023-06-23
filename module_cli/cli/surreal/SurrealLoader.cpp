@@ -7,6 +7,8 @@ namespace udocs_processor {
 nlohmann::json_pointer<std::string>
     SurrealLoader::EngineRootPath{SURREAL_ENGINE_ROOT_PATH};
 nlohmann::json_pointer<std::string>
+    SurrealLoader::ContactMeAtPath{SURREAL_CONTACT_ME_AT_PATH};
+nlohmann::json_pointer<std::string>
     SurrealLoader::TargetPath{SURREAL_TARGET_PATH};
 nlohmann::json_pointer<std::string>
     SurrealLoader::ConfigurationPath{SURREAL_CONFIGURATION_PATH};
@@ -91,6 +93,9 @@ std::unique_ptr<udocs_processor::SurrealProject>
   Result->Master = Data.at(MasterPath);
   Result->ImagesRoot = Data.at(ImagesRootPath);
   Result->Contents.reserve(Data.at(ContentsPath).size());
+  if (Data.contains(ContactMeAtPath)) {
+    Result->ContactMeAt = Data.at(ContactMeAtPath);
+  }
 
   for (const auto& Entry : Data.at(ContentsPath)) {
     SurrealProject::ContentEntry NewEntry;
@@ -158,6 +163,7 @@ std::string udocs_processor::SurrealLoader::Serialize(
   Data[LanguagePath] = Project.Language;
   Data[MasterPath] = Project.Master;
   Data[ImagesRootPath] = Project.ImagesRoot;
+  Data[ContactMeAtPath] = Project.ContactMeAt;
   Data[ContentsPath] = nlohmann::json::array();
 
   for (const auto& Entry : Project.Contents) {

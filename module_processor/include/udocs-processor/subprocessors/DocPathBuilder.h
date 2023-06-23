@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
+#include <random> NOLINT()
 #include <memory>
 #include <vector>
 #include "Subprocessor.h"
@@ -57,6 +58,8 @@ class DocPathBuilder : public Subprocessor {
   std::string_view GetName() const override;
 
  private:
+  std::string MakeHash(std::string Seed) const;
+
   template<typename T>
   void AddModuleDocPath(T& Node, bool IsNative);
 
@@ -102,6 +105,8 @@ class DocPathBuilder : public Subprocessor {
 
   std::string HashNode(const std::string& Name, DocNode& Node) const;
 
+  constexpr static uint32_t HASH_LENGTH = 32;
+
   constexpr static char SUBPROCESSOR_NAME[] = "Doc Paths Builder";
 
   constexpr static char DOCPATH_SEPARATOR[] = "/";
@@ -146,5 +151,8 @@ class DocPathBuilder : public Subprocessor {
 
   std::unique_ptr<NodeHasher> Hasher;
   std::shared_ptr<DocsIndexNode> Index;
+
+  std::random_device RandomDevice;
+  mutable std::mt19937 Generator;
 };
 }  // namespace udocs_processor

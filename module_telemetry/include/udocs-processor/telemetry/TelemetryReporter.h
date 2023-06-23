@@ -6,6 +6,7 @@
 #include <spdlog/logger.h>
 #include <memory>
 #include <string>
+#include <thread> NOLINT()
 #include <mutex> NOLINT()
 #include <vector>
 #include <nlohmann/json.hpp>
@@ -20,8 +21,9 @@ class TelemetryReporter {
 
   void SetTelemetryEnabled(bool IsEnabled);
 
+  // user HaveUserConsent = true only with user's explicit consent
   void ReportTelemetryEvent(const std::string& EventName,
-      const nlohmann::json& Payload);
+      const nlohmann::json& Payload, bool HaveUserConsent = false);
 
   void StartReporting();
 
@@ -31,7 +33,6 @@ class TelemetryReporter {
 
  private:
   static constexpr const char* LOGGER_NAME = "telemetry-reporter";
-  static constexpr const char* THREAD_NAME = "telemetry";
 
   bool IsTelemetryEnabled = true;
   bool DoReport = false;

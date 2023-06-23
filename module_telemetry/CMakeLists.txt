@@ -38,7 +38,9 @@ add_library(${PROJECT_NAME} SHARED
         telemetry/BasicTelemetry.cpp
         include/udocs-processor/telemetry/BasicTelemetry.h
         include/udocs-processor/telemetry/grpc.h
-        telemetry/grpc.cpp)
+        telemetry/grpc.cpp
+        telemetry/LogReporter.cpp
+        include/udocs-processor/telemetry/LogReporter.h)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "M-UDocs-Telemetry")
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN/")

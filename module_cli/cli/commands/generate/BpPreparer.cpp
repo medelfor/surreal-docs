@@ -87,7 +87,6 @@ void udocs_processor::BpPreparer::Prepare(
   }
 
   Ue->Run(Request.ProjectDirectory, Request.Version, {
-    EDITOR_COMMANDLET, EDITOR_REQUEST_FILE +
-    (QUOTE + OutputRequestPath + QUOTE)
+    EDITOR_COMMANDLET, EDITOR_REQUEST_FILE + OutputRequestPath
   }, Request.DoUseCmd);
 }

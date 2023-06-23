@@ -338,3 +338,9 @@ std::string
         const std::string& Image) {
   return StringHelper::EscapeUrl(Image, true);
 }
+
+std::string udocs_processor::StringHelper::Embrace(const std::string &String) {
+  std::string Result = String;
+  ReplaceAll(Result, SPACE_STR, "^ ");
+  return String;
+}

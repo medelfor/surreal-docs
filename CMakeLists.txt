@@ -26,13 +26,13 @@ find_package(stringtoolbox REQUIRED)
 find_package(inja REQUIRED)
 find_package(md4c REQUIRED)
 find_package(base64 REQUIRED)
-find_package(libexecstream REQUIRED)
 find_package(Crc32c REQUIRED)
 find_package(Poco REQUIRED)
 find_package(ftxui REQUIRED)
 find_package(CLI11 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(gRPC REQUIRED)
+find_package(termcolor REQUIRED)
 
 if(NOT DEFINED DO_BUILD_TESTS)
     set(DO_BUILD_TESTS ON)
@@ -55,18 +55,21 @@ endif()
 #see https://issues.internal.medelfor.com/youtrack/articles/KG-A-2
 
 #LIBRARY PART
+if (PLATFORM_WIN64 AND NOT SKIP_CLI)
+    add_subdirectory(module_cli)
+endif ()
 add_subdirectory(module_processor)
 add_subdirectory(module_serializer)
 add_subdirectory(module_base)
 add_subdirectory(module_report)
 add_subdirectory(module_telemetry)
 add_subdirectory(module_util)
-add_subdirectory(module_cli)
+add_subdirectory(module_cloud)
 
 install(DIRECTORY ${CMAKE_BINARY_DIR}/deps/
         DESTINATION ${CMAKE_INSTALL_PREFIX})
 
-if(DO_BUILD_EXECUTABLE)
+if(DO_BUILD_EXECUTABLE AND PLATFORM_WIN64)
     add_subdirectory(exec)
 endif()
 

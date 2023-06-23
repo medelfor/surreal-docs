@@ -28,6 +28,7 @@
 #include "udocs-processor/doctree/blueprints/BlueprintClassNode.h"
 #include "udocs-processor/doctree/blueprints/BlueprintFunctionNode.h"
 #include "udocs-processor/doctree/blueprints/BlueprintPropertyNode.h"
+#include "udocs-processor/serializers/IntegrityCheck.h"
 
 namespace udocs_processor {
 class ProcessingReport;
@@ -208,7 +209,8 @@ class JSONDocTreeSerializer : public DocTreeSerializer, public DocNodeVisitor {
       std::unique_ptr<UTypeToImagesSerializer> TypeToImagesSerializer,
       std::unique_ptr<UTypeToStringSerializer> TypeToStringSerializer,
       std::unique_ptr<FileDataLoader> DataLoader,
-      std::unique_ptr<DocPathsCache> PathsCache);
+      std::unique_ptr<DocPathsCache> PathsCache,
+      std::unique_ptr<IntegrityCheck> Checker);
 
   void Serialize(DocNode &Root) override;
 
@@ -916,6 +918,8 @@ class JSONDocTreeSerializer : public DocTreeSerializer, public DocNodeVisitor {
   char* Base64Buffer = nullptr;
 
   ManifestEntry::Format PageFormat = ManifestEntry::Format::JSON_V1;
+
+  std::unique_ptr<IntegrityCheck> Checker;
 
   std::unordered_map<DocPathsCache::IdType, std::string> PageTitles;
   std::unordered_map<DocPathsCache::IdType, std::string> PageBreadCrumbs;

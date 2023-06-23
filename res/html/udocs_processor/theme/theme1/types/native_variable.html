@@ -1,8 +1,7 @@
 <section id="field" class="api-article">
     {% include "common/deprecation.html" %}
     <div class="api-header">
-        <p class="api-enity-type">Native field</p>
-        {% include "common/bp_counterpart.html" %}
+        <p class="api-enity-type">Native global variable</p>
     </div>
     {% if p.namespace != "" %}
     <p class="api-heading-namespace">
@@ -19,7 +18,6 @@
     </ul>
     <div class="api-native-definition">
         {% include "common/definition_access.html" %}
-        {% include "common/definition_umacro.html" %}
         <span class="api-keyword">
         {% if p.is_static %}static{% endif %}
         {% if p.is_const %}const{% endif %}

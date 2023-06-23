@@ -38,6 +38,8 @@ add_library(${PROJECT_NAME} SHARED
         include/udocs-processor/serializers/type/UTypeToStringSerializer.h
         serializers/type/UTypeToStringSerializer.cpp
         serializers/UFunctionSerializer.cpp
+        serializers/IntegrityCheck.cpp
+        include/udocs-processor/serializers/IntegrityCheck.h
         )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "M-UDocs-Serializer")
@@ -60,7 +62,9 @@ target_link_libraries(${PROJECT_NAME}
         pantor::inja
         base64::base64
         md4c::md4c
-        libexecstream::libexecstream)
+        Crc32c::Crc32c
+        Boost::boost
+        Boost::filesystem)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PRIVATE "")

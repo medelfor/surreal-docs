@@ -35,6 +35,8 @@ class FtxInitView : public InitView, public FtxView {
 
   void SetOrganization(std::string Organization) override;
 
+  void SetContactMeAt(std::string ContactMeAt) override;
+
   void SelectEngineVersion(int VersionIndex) override;
 
   void SelectTarget(const std::string &Target) override;
@@ -54,6 +56,8 @@ class FtxInitView : public InitView, public FtxView {
   void SetFinished(bool IsFinished) override;
 
   void Start() override;
+
+  const std::string &GetContactMeAt() const override;
 
   const std::string &GetSelectedName() const override;
 
@@ -87,6 +91,7 @@ class FtxInitView : public InitView, public FtxView {
   static constexpr const char NAME_PLACEHOLDER[] = "My Project";
   static constexpr const char VERSION_PLACEHOLDER[] = "1.0.0";
   static constexpr const char ORGANIZATION_PLACEHOLDER[] = "My Company";
+  static constexpr const char CONTACT_ME_AT_PLACEHOLDER[] = "<don't contact>";
   static constexpr const char START_LABEL[] = "       Done";  // yep
 
   static constexpr const char CONFIGURATION_DEBUG[] = "Debug";
@@ -117,6 +122,7 @@ class FtxInitView : public InitView, public FtxView {
   std::string Name;
   std::string Version;
   std::string Organization;
+  std::string ContactMeAt;
   bool DoExportPrivate_ = false;
 
   int SelectedEngineVersion = 0;
@@ -132,6 +138,7 @@ class FtxInitView : public InitView, public FtxView {
   ftxui::Component NameInput;
   ftxui::Component VersionInput;
   ftxui::Component OrganizationInput;
+  ftxui::Component ContactMeAtInput;
   ftxui::Component DoExportPrivateCheckbox;
   ftxui::Component StartButton;
   ftxui::Component Renderer;

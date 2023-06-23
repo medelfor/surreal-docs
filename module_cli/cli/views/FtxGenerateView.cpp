@@ -32,6 +32,8 @@ void udocs_processor::FtxGenerateView::Destroy() {
 void udocs_processor::FtxGenerateView::Tick() {
   std::lock_guard<std::mutex> Lock{SelectionsProtection};
 
+  FtxView::Tick();
+
   ++FrameCount;
   if (AdFrames == AD_FRAMES) {
     Ad = (Ad + 1) % AdTexts.size();
@@ -52,6 +54,8 @@ ftxui::Elements udocs_processor::FtxGenerateView::Split(
 }
 
 void udocs_processor::FtxGenerateView::Init() {
+  FtxView::Init();
+
   using namespace ftxui; NOLINT()
 
   List = {"", "", ""};
@@ -64,7 +68,8 @@ void udocs_processor::FtxGenerateView::Init() {
       Radiobox(&List, &Ad) | ForegroundColor1()
   });
 
-  Renderer = ftxui::Renderer(Container::Vertical({ExitOnFinish, AdsRadio}),
+  Renderer = ftxui::Renderer(Container::Vertical({ExitOnFinish,
+      AdsRadio, GetComponents()}),
    [&]() {
      return WrapInWindow({
          window(
@@ -118,13 +123,13 @@ void udocs_processor::FtxGenerateView::Init() {
                  separatorEmpty(),
                  AdsRadio->Render()
              }),
-             separatorEmpty()),
+             separatorEmpty()) | VHide(HasErrored),
          filler(),
          WrapError(ErrorMessage, HasErrored)
          }, "Generation");
      });
   Renderer |= CatchEvent([&](Event Event_) {
-    if (HasFinished && Event_ == Event::Return) {
+    if (HasFinished && Event_ == Event::Escape) {
       DoExit_ = true;
       this->Screen.Exit();
       return true;

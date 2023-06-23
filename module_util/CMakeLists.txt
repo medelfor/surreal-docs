@@ -26,7 +26,8 @@ endif()
 target_link_libraries(${PROJECT_NAME}
         ${UNIX_LIBRARIES}
         udocs-processor_module_base
-        libexecstream::libexecstream
+        Boost::boost
+        Boost::filesystem
         spdlog::spdlog)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)

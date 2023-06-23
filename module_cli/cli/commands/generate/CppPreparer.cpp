@@ -2,6 +2,7 @@
 
 #include <boost/asio.hpp> NOLINT()
 #include <boost/process.hpp> NOLINT()
+#include <boost/process/exe.hpp> NOLINT()
 #include "udocs-processor/cli/commands/generate/CppPreparer.h"
 #include <spdlog/spdlog.h> NOLINT()
 #include <thread> NOLINT()
@@ -12,6 +13,7 @@
 #include <inja/template.hpp>
 #include <boost/process/child.hpp>
 #include "udocs-processor/StringHelper.h"
+#include "udocs-processor/ExecStreamHelper.h"
 
 void udocs_processor::CppPreparer::SetBinDirectory(
     const std::string& BinDirectory) {
@@ -46,27 +48,19 @@ void udocs_processor::CppPreparer::RunDoxygen(
   using time_point = std::chrono::steady_clock::time_point;
   time_point Begin = std::chrono::steady_clock::now();
 
-  boost::asio::io_service IoService;
-  std::future<std::string> Data;
+  ExecStreamHelper::ProcessResult Result = ExecStreamHelper::Run(Arguments);
 
-  boost::process::child Child(Arguments,
-    boost::process::std_in.close(),
-    (boost::process::std_out & boost::process::std_err) > Data, IoService);
-
-  IoService.run();
-  Child.wait();
-
-  l->warn("DoxygenUE output:\n{}", Data.get());
+  l->warn("DoxygenUE output:\n{}", Result.Output);
   time_point End = std::chrono::steady_clock::now();
   uint64_t TimeMs = std::chrono::duration_cast<
       std::chrono::milliseconds>(End - Begin).count();
   l->info("DoxygenUE took {}ms and exited with code {}",
-      TimeMs, Child.exit_code());
+      TimeMs, Result.ExitCode);
 
-  if (Child.exit_code()) {
+  if (Result.ExitCode) {
     l->error("DoxygenUE failed");
     throw std::runtime_error{fmt::format("DoxygenUE exited with code {}",
-        Child.exit_code())};
+        Result.ExitCode)};
   }
 }
 
@@ -109,27 +103,19 @@ void udocs_processor::CppPreparer::RunDoxybook(
   using time_point = std::chrono::steady_clock::time_point;
   time_point Begin = std::chrono::steady_clock::now();
 
-  boost::asio::io_service IoService;
-  std::future<std::string> Data;
+  ExecStreamHelper::ProcessResult Result = ExecStreamHelper::Run(Arguments);
 
-  boost::process::child Child(Arguments,
-    boost::process::std_in.close(),
-    (boost::process::std_out & boost::process::std_err) > Data, IoService);
-
-  IoService.run();
-  Child.wait();
-
-  l->warn("Doxybook output:\n{}", Data.get());
+  l->warn("Doxybook output:\n{}", Result.Output);
   time_point End = std::chrono::steady_clock::now();
   uint64_t TimeMs = std::chrono::duration_cast<
       std::chrono::milliseconds>(End - Begin).count();
   l->info("Doxybook took {}ms and exited with code {}",
-      TimeMs, Child.exit_code());
+      TimeMs, Result.ExitCode);
 
-  if (Child.exit_code()) {
+  if (Result.ExitCode) {
     l->error("Doxybook failed");
     throw std::runtime_error{fmt::format("Doxybook exited with code {}",
-        Child.exit_code())};
+        Result.ExitCode)};
   }
 }
 

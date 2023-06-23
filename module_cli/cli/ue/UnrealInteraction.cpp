@@ -8,6 +8,7 @@
 #include <regex> NOLINT()
 #include <set> NOLINT()
 #include "udocs-processor/StringHelper.h"
+#include "udocs-processor/ExecStreamHelper.h"
 
 std::vector<udocs_processor::UnrealInteraction::UnrealVersion>
     udocs_processor::UnrealInteraction::EnumerateVersions() const {
@@ -165,19 +166,10 @@ void udocs_processor::UnrealInteraction::Build(const std::string &Target,
   using time_point = std::chrono::steady_clock::time_point;
   time_point Begin = std::chrono::steady_clock::now();
 
-  boost::asio::io_service IoService;
-  std::future<std::string> Data;
+  ExecStreamHelper::ProcessResult Result = ExecStreamHelper::Run(Arguments);
 
-  boost::process::child Child(Arguments,
-    boost::process::std_in.close(),
-    (boost::process::std_out & boost::process::std_err) > Data, IoService);
-
-  IoService.run();
-  Child.wait();
-
-  std::string Output = Data.get();
-  l->warn("UAT build output:\n{}", Output);
-  uint64_t ExitCode = ParseUATExitCode(Output);
+  l->warn("UAT build output ({}):\n{}", Result.ExitCode, Result.Output);
+  uint64_t ExitCode = ParseUATExitCode(Result.Output);
   time_point End = std::chrono::steady_clock::now();
   uint64_t TimeMs = std::chrono::duration_cast<
       std::chrono::milliseconds>(End - Begin).count();
@@ -196,7 +188,7 @@ uint64_t udocs_processor::UnrealInteraction::ParseUATExitCode(
   static std::regex Pattern{UAT_EXIT_CODE_PATTERN, std::regex::icase};
   std::smatch Match;
   if (std::regex_search(UATOutput, Match, Pattern)) {
-    uint64_t ExitCode = std::stoull(
+    uint64_t ExitCode = StringHelper::SafeStoull(
         Match[UAT_EXIT_CODE_PATTERN_CODE_GROUP].str());
     return ExitCode;
   }
@@ -238,29 +230,18 @@ void udocs_processor::UnrealInteraction::Run(const std::string &ProjectDir,
   using time_point = std::chrono::steady_clock::time_point;
   time_point Begin = std::chrono::steady_clock::now();
 
-  boost::asio::io_service IoService;
-  std::future<std::string> Data;
+  ExecStreamHelper::ProcessResult Result = ExecStreamHelper::Run(FinalArgs);
 
-  boost::process::child Child(FinalArgs,
-    boost::process::std_in.close(),
-    (boost::process::std_out & boost::process::std_err) > Data, IoService);
-
-  IoService.run();
-  Child.wait();
-
-  std::string Output = Data.get();
-  l->warn("Editor output:\n{}", Output);
-  uint64_t ExitCode = Child.exit_code();  // ParseUATExitCode(Output);
+  l->warn("Editor output:\n{}", Result.Output);
+  uint64_t ExitCode = Result.ExitCode;  // ParseUATExitCode(Output);
   time_point End = std::chrono::steady_clock::now();
   uint64_t TimeMs = std::chrono::duration_cast<
       std::chrono::milliseconds>(End - Begin).count();
   l->info("Editor took {}ms and exited with code {}",
-      TimeMs, ExitCode);
+      TimeMs, Result.ExitCode);
 
-  if (ExitCode) {
-    l->error("Editor failed");
-    throw std::runtime_error{fmt::format("Editor exited with code {}",
-        ExitCode)};
+  if (Result.ExitCode) {
+    l->warn("Editor exited with {}", Result.ExitCode);
   }
 }
 

@@ -3,12 +3,17 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include "udocs-processor/version.h"
+#include "udocs-processor/telemetry/LogReporter.h"
 
 namespace udocs_processor {
 class View {
  public:
   View();
+
+  virtual void SetLogReporter(std::optional<std::string> ContactMeAt,
+      std::shared_ptr<LogReporter> Reporter);
 
   virtual void Start() {}
 
@@ -17,6 +22,10 @@ class View {
   virtual void Tick() = 0;
 
   virtual void Destroy() = 0;
+
+  virtual bool DoExit() const = 0;
+
+  virtual void SetFinished(bool IsFinished) = 0;
 
   void SetLogFilePath(std::string LogFilePath);
 
@@ -33,13 +42,12 @@ class View {
   static constexpr const char ERROR_ISSUE[] =
       "If you believe something's wrong with the product, please create an "
       "issue in Surreal Docs GitHub available at "
-      "https://github.com/medelfor/surreal-docs";
-  static constexpr const char ERROR_SORRY[] =
-      "\"Surreal Docs Crypto\", \"Surreal Docs XL\" or \"Surreal Docs Crypto "
-      "XL\" licenses include Priority Customer Care plan. If you or your "
-      "organization own one of these licenses please contact us at "
-      "support@medelfor.com with your license ID and problem description, "
-      "we will help you to resolve the issue as soon as possible";
+      "https://github.com/medelfor/surreal-docs You can also contact us at "
+      "support@medelfor.com or @medelfor at Twitter. We're glad to help!";
+  static constexpr const char ERROR_SORRY[] = "";
+
+ protected:
+  std::shared_ptr<LogReporter> GetLogReporter() const;
 
  private:
   std::string NewVersion;
@@ -53,5 +61,8 @@ class View {
 
   static constexpr const char NEW_VERSION_PATTERN[] =
       "Surreal Docs v{} is out!";
+
+  std::optional<std::string> ContactMeAt;
+  std::shared_ptr<LogReporter> Reporter;
 };
 }  // namespace udocs_processor

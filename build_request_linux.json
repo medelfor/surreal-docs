@@ -55,7 +55,7 @@
     "to_not_lint": [
       "module_telemetry/generated",
       "module_cli/generated",
-      "module_cli/include/udocs-processor/cli/thirdparty",
+      "module_cli/include/udocs-processor/cli/thirdparty"
     ],
     "lint_profile" : "default"
   },

@@ -8,6 +8,9 @@
   "license": "Copyright © 2023, Medelfor, Limited. All rights reserved.",
   "homepage": "https://medelfor.com",
   "dependencies": {
-    "puppeteer": "^20.2.0"
+    "minimist": "^1.2.8",
+    "package.json": "^2.0.1",
+    "path": "^0.12.7",
+    "puppeteer": "^20.5.0"
   }
 }

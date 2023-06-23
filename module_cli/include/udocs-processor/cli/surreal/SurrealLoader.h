@@ -49,6 +49,7 @@ struct SurrealProject {
   std::string Language;
   std::string Master;
   std::string ImagesRoot;
+  std::string ContactMeAt;
   std::vector<ContentEntry> Contents;
 };
 
@@ -84,6 +85,7 @@ class SurrealLoader {
   static nlohmann::json_pointer<std::string> TitlePath;
   static nlohmann::json_pointer<std::string> LanguagePath;
   static nlohmann::json_pointer<std::string> MasterPath;
+  static nlohmann::json_pointer<std::string> ContactMeAtPath;
   static nlohmann::json_pointer<std::string> ImagesRootPath;
   static nlohmann::json_pointer<std::string> ContentsPath;
   static nlohmann::json_pointer<std::string> ContentEntryTitlePath;
@@ -94,6 +96,7 @@ class SurrealLoader {
   static nlohmann::json_pointer<std::string> PagePagePath;
   static nlohmann::json_pointer<std::string> PageApiPath;
 
+  static constexpr const char SURREAL_CONTACT_ME_AT_PATH[] = "/contact_me_at";
   static constexpr const char SURREAL_LOGO_PATH[] = "/logo";
   static constexpr const char SURREAL_TAG_PATH[] = "/tag";
   static constexpr const char SURREAL_VERSION_PATH[] = "/version";

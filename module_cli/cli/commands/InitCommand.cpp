@@ -110,11 +110,16 @@ bool udocs_processor::InitCommand::IsNewProject(
 }
 
 void udocs_processor::InitCommand::InitializeProject(
-    const std::string& ProjectDir) const {
-  InstallDefaultDocumentation(ProjectDir);
+    const std::string& ProjectDir, bool IsNewProject) const {
+  if (IsNewProject) {
+    InstallDefaultDocumentation(ProjectDir);
+  }
+
   InstallPlugin(ProjectDir);
 
-  Ue->EnableAutoCompile(ProjectDir);
+  if (IsNewProject) {
+    Ue->EnableAutoCompile(ProjectDir);
+  }
 }
 
 void udocs_processor::InitCommand::SetInstallPath(std::string InstallPath) {
