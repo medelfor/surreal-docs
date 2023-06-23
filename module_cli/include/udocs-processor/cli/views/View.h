@@ -23,6 +23,10 @@ class View {
 
   virtual void Destroy() = 0;
 
+  virtual bool DoExit() const = 0;
+
+  virtual void SetFinished(bool IsFinished) = 0;
+
   void SetLogFilePath(std::string LogFilePath);
 
   void SetNewVersion(std::string NewVersion);

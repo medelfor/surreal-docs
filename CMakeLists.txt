@@ -32,6 +32,7 @@ find_package(ftxui REQUIRED)
 find_package(CLI11 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(gRPC REQUIRED)
+find_package(termcolor REQUIRED)
 
 if(NOT DEFINED DO_BUILD_TESTS)
     set(DO_BUILD_TESTS ON)
@@ -63,6 +64,7 @@ add_subdirectory(module_base)
 add_subdirectory(module_report)
 add_subdirectory(module_telemetry)
 add_subdirectory(module_util)
+add_subdirectory(module_cloud)
 
 install(DIRECTORY ${CMAKE_BINARY_DIR}/deps/
         DESTINATION ${CMAKE_INSTALL_PREFIX})

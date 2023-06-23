@@ -77,7 +77,117 @@ add_library(${PROJECT_NAME} SHARED
         include/udocs-processor/cli/version/ProductService.h
         include/udocs-processor/cli/version/grpc.h
         include/udocs-processor/cli/version/grpcProductService.h
-        include/udocs-processor/cli/version/VersionChecker.h)
+        include/udocs-processor/cli/version/VersionChecker.h
+        cli/commands/AuthCommand.cpp
+        cli/commands/OrganizationCreateCommand.cpp
+        cli/commands/OrganizationDeleteCommand.cpp
+        cli/commands/OrganizationListCommand.cpp
+        cli/commands/ProjectAnnounceCommand.cpp
+        cli/commands/ProjectCollaboratorAddCommand.cpp
+        cli/commands/ProjectCollaboratorDeleteCommand.cpp
+        cli/commands/ProjectCollaboratorListCommand.cpp
+        cli/commands/ProjectCreateCommand.cpp
+        cli/commands/ProjectDeleteCommand.cpp
+        cli/commands/ProjectListCommand.cpp
+        cli/commands/ProjectPublishCommand.cpp
+        cli/commands/TokenCreateCommand.cpp
+        cli/commands/TokenListCommand.cpp
+        cli/commands/QuotaListCommand.cpp
+        include/udocs-processor/cli/commands/TokenCreateCommand.h
+        include/udocs-processor/cli/commands/TokenListCommand.h
+        include/udocs-processor/cli/commands/QuotaListCommand.h
+        include/udocs-processor/cli/commands/ProjectPublishCommand.h
+        include/udocs-processor/cli/commands/ProjectListCommand.h
+        include/udocs-processor/cli/commands/ProjectDeleteCommand.h
+        include/udocs-processor/cli/commands/ProjectCreateCommand.h
+        include/udocs-processor/cli/commands/ProjectCollaboratorListCommand.h
+        include/udocs-processor/cli/commands/ProjectCollaboratorDeleteCommand.h
+        include/udocs-processor/cli/commands/ProjectCollaboratorAddCommand.h
+        include/udocs-processor/cli/commands/ProjectAnnounceCommand.h
+        include/udocs-processor/cli/commands/OrganizationListCommand.h
+        include/udocs-processor/cli/commands/OrganizationDeleteCommand.h
+        include/udocs-processor/cli/commands/OrganizationCreateCommand.h
+        include/udocs-processor/cli/commands/AuthCommand.h
+        cli/views/FtxAuthView.cpp
+        cli/views/FtxOrganizationCreateView.cpp
+        cli/views/FtxOrganizationDeleteView.cpp
+        cli/views/FtxOrganizationListView.cpp
+        cli/views/FtxProjectAnnounceView.cpp
+        cli/views/FtxProjectCollaboratorAddView.cpp
+        cli/views/FtxProjectCollaboratorDeleteView.cpp
+        cli/views/FtxProjectCollaboratorListView.cpp
+        cli/views/FtxProjectCreateView.cpp
+        cli/views/FtxProjectDeleteView.cpp
+        cli/views/FtxProjectListView.cpp
+        cli/views/FtxProjectPublishView.cpp
+        cli/views/FtxQuotaListView.cpp
+        cli/views/FtxSimpleView.cpp
+        cli/views/FtxTokenCreateView.cpp
+        cli/views/FtxTokenListView.cpp
+        include/udocs-processor/cli/views/FtxAuthView.h
+        include/udocs-processor/cli/views/FtxProjectDeleteView.h
+        include/udocs-processor/cli/views/FtxProjectListView.h
+        include/udocs-processor/cli/views/FtxProjectPublishView.h
+        include/udocs-processor/cli/views/FtxQuotaListView.h
+        include/udocs-processor/cli/views/FtxSimpleView.h
+        include/udocs-processor/cli/views/FtxTokenCreateView.h
+        include/udocs-processor/cli/views/FtxTokenListView.h
+        include/udocs-processor/cli/views/FtxProjectCreateView.h
+        include/udocs-processor/cli/views/FtxProjectCollaboratorListView.h
+        include/udocs-processor/cli/views/FtxProjectCollaboratorDeleteView.h
+        include/udocs-processor/cli/views/FtxProjectCollaboratorAddView.h
+        include/udocs-processor/cli/views/FtxProjectAnnounceView.h
+        include/udocs-processor/cli/views/FtxQuotaListView.h
+        include/udocs-processor/cli/views/FtxOrganizationCreateView.h
+        include/udocs-processor/cli/views/FtxOrganizationDeleteView.h
+        include/udocs-processor/cli/views/FtxOrganizationListView.h
+        include/udocs-processor/cli/views/OrganizationCreateView.h
+        include/udocs-processor/cli/views/OrganizationDeleteView.h
+        include/udocs-processor/cli/views/OrganizationListView.h
+        include/udocs-processor/cli/views/ProjectAnnounceView.h
+        include/udocs-processor/cli/views/ProjectCollaboratorAddView.h
+        include/udocs-processor/cli/views/ProjectCollaboratorDeleteView.h
+        include/udocs-processor/cli/views/ProjectCollaboratorListView.h
+        include/udocs-processor/cli/views/ProjectCreateView.h
+        include/udocs-processor/cli/views/ProjectDeleteView.h
+        include/udocs-processor/cli/views/ProjectListView.h
+        include/udocs-processor/cli/views/ProjectPublishView.h
+        include/udocs-processor/cli/views/AuthView.h
+        include/udocs-processor/cli/views/TokenCreateView.h
+        include/udocs-processor/cli/views/TokenListView.h
+        include/udocs-processor/cli/views/QuotaListView.h
+        include/udocs-processor/cli/views/SimpleView.h
+        cli/cli/OrganizationCreateCLI.cpp
+        cli/cli/OrganizationDeleteCLI.cpp
+        cli/cli/OrganizationListCLI.cpp
+        cli/cli/ProjectAnnounceCLI.cpp
+        cli/cli/ProjectCollaboratorAddCLI.cpp
+        cli/cli/ProjectCollaboratorDeleteCLI.cpp
+        cli/cli/ProjectCollaboratorListCLI.cpp
+        cli/cli/ProjectCreateCLI.cpp
+        cli/cli/ProjectDeleteCLI.cpp
+        cli/cli/ProjectListCLI.cpp
+        cli/cli/ProjectPublishCLI.cpp
+        cli/cli/QuotaListCLI.cpp
+        cli/cli/TokenCreateCLI.cpp
+        cli/cli/TokenListCLI.cpp
+        cli/cli/AuthCLI.cpp
+        include/udocs-processor/cli/cli/AuthCLI.h
+        include/udocs-processor/cli/cli/OrganizationCreateCLI.h
+        include/udocs-processor/cli/cli/OrganizationDeleteCLI.h
+        include/udocs-processor/cli/cli/OrganizationListCLI.h
+        include/udocs-processor/cli/cli/ProjectAnnounceCLI.h
+        include/udocs-processor/cli/cli/ProjectCollaboratorAddCLI.h
+        include/udocs-processor/cli/cli/ProjectCollaboratorDeleteCLI.h
+        include/udocs-processor/cli/cli/ProjectCollaboratorListCLI.h
+        include/udocs-processor/cli/cli/ProjectCreateCLI.h
+        include/udocs-processor/cli/cli/ProjectDeleteCLI.h
+        include/udocs-processor/cli/cli/ProjectListCLI.h
+        include/udocs-processor/cli/cli/ProjectPublishCLI.h
+        include/udocs-processor/cli/cli/QuotaListCLI.h
+        include/udocs-processor/cli/cli/TokenCreateCLI.h
+        include/udocs-processor/cli/cli/TokenListCLI.h
+        )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "M-UDocs-CLI")
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN/")
@@ -91,11 +201,13 @@ endif()
 target_link_libraries(${PROJECT_NAME}
         ${UNIX_LIBRARIES}
         udocs-processor_module_telemetry
+        udocs-processor_module_cloud
         udocs-processor_module_processor
         udocs-processor_module_serializer
         udocs-processor_module_util
         CLI11::CLI11
         Boost::boost
+        termcolor::termcolor
         Boost::filesystem
         ftxui::ftxui)
 

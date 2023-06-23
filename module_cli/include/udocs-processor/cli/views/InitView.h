@@ -64,9 +64,5 @@ class InitView : public virtual View {
   virtual void SetDoExportPrivate(bool DoExport) = 0;
 
   virtual bool DoExportPrivate() const = 0;
-
-  virtual bool DoExit() const = 0;
-
-  virtual void SetFinished(bool IsFinished) = 0;
 };
 }  // namespace udocs_processor
