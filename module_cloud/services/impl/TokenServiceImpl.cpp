@@ -66,7 +66,14 @@ udocs_processor::TokenService::ListTokensResponse
 }
 
 udocs_processor::TokenServiceImpl::TokenServiceImpl(
+    std::shared_ptr<spdlog::sinks::sink> Sink,
     std::shared_ptr<grpc::Channel> Channel) {
   Token = std::make_unique<surapi::Token::Stub>(Channel);
   l = spdlog::get(LOGGER_NAME);
+  if (!l) {
+    l = std::make_shared<spdlog::logger>(LOGGER_NAME);
+    if (Sink) {
+      l->sinks().emplace_back(Sink);
+    }
+  }
 }

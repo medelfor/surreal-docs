@@ -32,9 +32,9 @@ class InitCommand {
 
   void SetResourcesPath(std::string ResourcesPath);
 
- private:
   void InstallPlugin(const std::string& ProjectDir) const;
 
+ private:
   void InstallDefaultDocumentation(const std::string& ProjectDir) const;
 
   static constexpr const char UNREALISTIC_DOCS_PLUGIN[] = "UnrealisticDocs";

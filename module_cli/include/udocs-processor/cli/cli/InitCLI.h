@@ -6,6 +6,8 @@
 #include <spdlog/logger.h>
 #include <string>
 #include <map>
+#include <set>
+#include <vector>
 #include <memory>
 #include <chrono> NOLINT()
 #include "udocs-processor/cli/commands/InitCommand.h"
@@ -32,7 +34,7 @@ class InitCLI {
  private:
   std::filesystem::path Absolutify(const std::string& Path) const;
 
-  void InitializeView(const SurrealProject& Project) const;
+  void InitializeView(const SurrealProject& Project);
 
   static constexpr const char* LOGGER_NAME = "init-cli";
   static constexpr const char* TELEMETRY_COMMAND_NAME = "init";
@@ -47,6 +49,8 @@ class InitCLI {
   std::unique_ptr<InitView> InteractiveView;
   std::unique_ptr<InitCommand> Command;
   std::unique_ptr<UnrealInteraction> Ue;
+  std::vector<UnrealInteraction::Source> Sources;
+  std::set<int> InitiallySelectedSources;
 
   std::shared_ptr<spdlog::logger> l;
 

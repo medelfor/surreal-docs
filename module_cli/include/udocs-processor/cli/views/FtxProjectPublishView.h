@@ -12,10 +12,18 @@ namespace udocs_processor {
 class FtxProjectPublishView : public virtual ProjectPublishView,
     public virtual FtxSimpleView {
  public:
-  FtxProjectPublishView();
+  FtxProjectPublishView() = default;
+
+  void Init() override;
+
+  void ReportSuccess() override;
+
+  ~FtxProjectPublishView() override = default;
 
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The project was successfuly published";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Publishing the project...";
 };
 }  // namespace udocs_processor

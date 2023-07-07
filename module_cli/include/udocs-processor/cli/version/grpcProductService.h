@@ -15,6 +15,8 @@ class grpcProductService : public ProductService {
 
   LatestVersionResponse GetLatestVersion(const std::string &ProductId) override;
 
+  GetBroadcastResponse GetBroadcast(const std::string &ProductId) override;
+
  private:
   std::unique_ptr<api::products::Product::Stub> Product;
 };

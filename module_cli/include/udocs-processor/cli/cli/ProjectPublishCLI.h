@@ -11,14 +11,21 @@
 #include "udocs-processor/cli/commands/ProjectPublishCommand.h"
 #include "udocs-processor/cli/views/ProjectPublishView.h"
 #include "udocs-processor/telemetry/BasicTelemetry.h"
+#include "udocs-processor/cli/cli/token/TokenLoader.h"
 
 namespace udocs_processor {
 class ProjectPublishCLI {
  public:
-  struct Arguments {};
+  struct Arguments {
+    std::string Location;
+    enum class ProjectService::PublishProjectRequest::Scope Scope =
+        ProjectService::PublishProjectRequest::Scope::PUBLIC;
+    TokenLoader::TokenSource Source = TokenLoader::TokenSource::NO_PREFERENCE;
+  };
 
   ProjectPublishCLI(std::shared_ptr<spdlog::sinks::sink> Sink,
       std::unique_ptr<ProjectPublishCommand> Command,
+      std::shared_ptr<TokenLoader> Token,
       std::shared_ptr<BasicTelemetry> Telemetry);
 
   bool PublishProject(const Arguments& Args) const;
@@ -40,5 +47,6 @@ class ProjectPublishCLI {
   std::shared_ptr<spdlog::logger> l;
 
   std::shared_ptr<BasicTelemetry> Telemetry;
+  std::shared_ptr<TokenLoader> Token;
 };
 }  // namespace udocs_processor

@@ -14,8 +14,21 @@ class FtxQuotaListView : public virtual QuotaListView,
  public:
   FtxQuotaListView();
 
+  void Init() override;
+
+  void ShowQuota(
+      const std::vector<QuotaService::QuotaResource> &Resources) override;
+
+  ~FtxQuotaListView() override = default;
+
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char PROGRESS_MESSAGE[] = "Retrieving quota...";
+  static constexpr const char LIMITED_RESOURCE_PATTERN[] =
+      "{} {:>20} {:>10}/{}";
+  static constexpr const char UNLIMITED_RESOURCE_PATTERN[] = "{} {:>20} {:>10}";
+  static constexpr const char SUCCESS_MESSAGE[] =
+      "Quota was successfully retrieved";
+  static constexpr const char REACHED[] = "[ EXC ]";
+  static constexpr const char ACTIVE[] =  "       ";
 };
 }  // namespace udocs_processor

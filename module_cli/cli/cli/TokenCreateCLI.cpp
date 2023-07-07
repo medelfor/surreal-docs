@@ -19,17 +19,16 @@ bool udocs_processor::TokenCreateCLI::CreateToken(
       try {
         TokenCreateCommand::CreateRequest Request = MakeRequest(Args);
 
-        Command->Create(Request);
+        TokenService::TokenData Data = Command->Create(Request);
+        CliView->ShowToken(Data.Token, Data.Basic.ExpiresAt);
       } catch (const std::exception& Exc) {
         Success = false;
         Telemetry->ReportFail(TELEMETRY_COMMAND_NAME, Exc.what());
         l->error("Exception in token create thread: {}", Exc.what());
-        CliView->SetFinished(true);
+        CliView->ReportError(Exc.what());
       }
 
-      if (Success) {
-        CliView->SetFinished(true);
-      }
+      CliView->SetFinished(true);
     });
 
   auto ViewThread = std::thread(
@@ -41,8 +40,8 @@ bool udocs_processor::TokenCreateCLI::CreateToken(
       }
       CliView->Destroy();
     });
-  CliView->Start();
 
+  CliView->Start();
   Future.wait();
   ViewThread.join();
 

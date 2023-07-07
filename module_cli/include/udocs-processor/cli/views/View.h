@@ -46,6 +46,8 @@ class View {
       "support@medelfor.com or @medelfor at Twitter. We're glad to help!";
   static constexpr const char ERROR_SORRY[] = "";
 
+  virtual ~View() = default;
+
  protected:
   std::shared_ptr<LogReporter> GetLogReporter() const;
 

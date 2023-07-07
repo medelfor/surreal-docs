@@ -4,10 +4,13 @@
 
 #define NOLINT()
 
+#include <date/date.h>
+#include <fmt/format.h>
 #include <regex> NOLINT()
 #include <algorithm>
 #include <locale>
 #include <codecvt>
+#include <chrono> NOLINT()
 
 // AllowWbr is deprecated
 std::string udocs_processor::StringHelper::EscapeHtml(
@@ -291,6 +294,33 @@ std::string udocs_processor::StringHelper::ConcatDescriptions(
     const std::string &Description1, const std::string &Description2) {
   return Description1 + (!Description1.empty() && !Description2.empty()
     ? DESCRIPTION_CONCAT_GLUE : "") + Description2;
+}
+
+std::string udocs_processor::StringHelper::MakeDateTime(
+    uint64_t Timestamp, bool DoIncludeTime, bool DoUseMonthShortNames) {
+  using Clock = std::chrono::system_clock;
+  using TimePoint = std::chrono::time_point<Clock>;
+
+  std::chrono::seconds Seconds{Timestamp};
+  TimePoint Time(Seconds);
+  auto Days = std::chrono::floor<date::days>(Time);
+  date::year_month_day Ymd{Days};
+  date::hh_mm_ss Hms{
+    std::chrono::floor<std::chrono::milliseconds>(Time - Days)};
+
+#define TOUINT(X) static_cast<unsigned>(X)
+#define TOINT(X) static_cast<int>(X)
+
+  uint64_t Day = TOUINT(Ymd.day());
+  const char* Month = (DoUseMonthShortNames ? MONTH_NAMES : MONTH_NAMES_FULL)
+      [TOUINT(Ymd.month()) - 1];
+  uint64_t Year = TOINT(Ymd.year());
+  uint64_t Hours = Hms.hours().count();
+  uint64_t Minutes = Hms.minutes().count();
+
+  return fmt::format("{} {} {}" +
+      std::string(DoIncludeTime ? " {:02}:{:02}" : "") + " UTC",
+          Day, Month, Year, Hours, Minutes);
 }
 
 std::string udocs_processor::StringHelper::FormatByCapital(

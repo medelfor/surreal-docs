@@ -587,7 +587,7 @@ class JSONDocTreeSerializer : public DocTreeSerializer, public DocNodeVisitor {
   constexpr static char PARAM_DEFAULT[] = "default";
 
   constexpr static char HMTL2PNG_LIST_GLUE[] = ", ";
-  constexpr static char HMTL2PNG_EXECUTOR[] = "node";
+  constexpr static char HMTL2PNG_EXECUTOR[] = "html2png.exe";
   constexpr static char HMTL2PNG_INPUT[] = "--input=";
   constexpr static char HMTL2PNG_OUTPUT[] = "--output=";
   constexpr static char HMTL2PNG_LIST[] = "--ids=";
@@ -662,6 +662,10 @@ class JSONDocTreeSerializer : public DocTreeSerializer, public DocNodeVisitor {
   constexpr static char BLUEPRINT_CLASS_TYPE_WIDGET[] = "widget";
   constexpr static char BLUEPRINT_CLASS_TYPE_FUNCTION_LIBRARY[] =
       "function library";
+  constexpr static char BLUEPRINT_CLASS_TYPE_DEVSETTINGS[] =
+      "developer settings";
+  constexpr static char BLUEPRINT_CLASS_TYPE_SUBSYSTEM[] =
+      "subsystem";
   constexpr static char BLUEPRINT_CLASS_TYPE_COMPONENT[] = "component";
   constexpr static char BLUEPRINT_CLASS_TYPE_ACTOR[] = "actor";
   constexpr static char BLUEPRINT_CLASS_IS_BLUEPRINT_TYPE[] =

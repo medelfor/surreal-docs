@@ -24,6 +24,8 @@ class NonInteractiveGenerateView : public GenerateView {
 
   void Destroy() override;
 
+  ~NonInteractiveGenerateView() override = default;
+
  private:
   std::mutex ToRenderProtection;
   std::vector<std::string> ToRender;

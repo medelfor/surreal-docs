@@ -3,6 +3,7 @@
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <functional>
 
 namespace udocs_processor {
@@ -69,6 +70,9 @@ class StringHelper {
 
   static std::string Embrace(const std::string& String);
 
+  static std::string MakeDateTime(uint64_t Timestamp, bool DoIncludeTime,
+      bool DoUseMonthShortNames = true);
+
   static float SafeStof(const std::string& Value) {
     try {
       return std::stof(Value);
@@ -98,6 +102,15 @@ class StringHelper {
       return std::stod(Value);
     } catch (const std::exception& Exc) {
       return 0;
+    }
+  }
+
+  template <typename T>
+  static void Split(const std::string &Input, char Delimiter, T Result) {
+    std::istringstream Stream(Input);
+    std::string Item;
+    while (std::getline(Stream, Item, Delimiter)) {
+      *Result++ = Item;
     }
   }
 
@@ -166,5 +179,18 @@ class StringHelper {
 
   constexpr static char URL_UNESCAPED[] = "~-_.+!*(),%#@?=;:/,+$&";
   constexpr static char HEX[] = "0123456789ABCDEF";
+
+  static constexpr const char* MONTH_NAMES[] = {
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+      "Aug", "Sep", "Nov", "Oct", "Dec"
+  };
+
+  static constexpr const char* MONTH_NAMES_FULL[] = {
+      "January", "February", "March", "April", "May", "June", "July",
+      "August", "September", "November", "October", "December"
+  };
+
+  static constexpr char MMYYYY_PATTERN[] = R"((\d{2})\.\d{2}(\d{2}))";
+  static constexpr char MM_YY_SEPARATOR = '/';
 };
 }  // namespace udocs_processor

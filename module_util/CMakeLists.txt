@@ -27,6 +27,7 @@ target_link_libraries(${PROJECT_NAME}
         ${UNIX_LIBRARIES}
         udocs-processor_module_base
         Boost::boost
+        date::date
         Boost::filesystem
         spdlog::spdlog)
 

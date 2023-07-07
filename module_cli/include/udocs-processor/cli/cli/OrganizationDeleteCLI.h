@@ -11,14 +11,20 @@
 #include "udocs-processor/cli/commands/OrganizationDeleteCommand.h"
 #include "udocs-processor/cli/views/OrganizationDeleteView.h"
 #include "udocs-processor/telemetry/BasicTelemetry.h"
+#include "udocs-processor/cli/cli/token/TokenLoader.h"
 
 namespace udocs_processor {
 class OrganizationDeleteCLI {
  public:
-  struct Arguments {};
+  struct Arguments {
+    bool PreConfirmation = false;
+    std::string Name;
+    TokenLoader::TokenSource Source = TokenLoader::TokenSource::NO_PREFERENCE;
+  };
 
   OrganizationDeleteCLI(std::shared_ptr<spdlog::sinks::sink> Sink,
       std::unique_ptr<OrganizationDeleteCommand> Command,
+      std::shared_ptr<TokenLoader> Token,
       std::shared_ptr<BasicTelemetry> Telemetry);
 
   bool DeleteOrganization(const Arguments& Args) const;
@@ -40,5 +46,6 @@ class OrganizationDeleteCLI {
   std::shared_ptr<spdlog::logger> l;
 
   std::shared_ptr<BasicTelemetry> Telemetry;
+  std::shared_ptr<TokenLoader> Token;
 };
 }  // namespace udocs_processor

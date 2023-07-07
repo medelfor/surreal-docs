@@ -156,6 +156,8 @@ add_library(${PROJECT_NAME} SHARED
         include/udocs-processor/cli/views/TokenCreateView.h
         include/udocs-processor/cli/views/TokenListView.h
         include/udocs-processor/cli/views/QuotaListView.h
+        include/udocs-processor/cli/views/MigrateView.h
+        include/udocs-processor/cli/views/FtxMigrateView.h
         include/udocs-processor/cli/views/SimpleView.h
         cli/cli/OrganizationCreateCLI.cpp
         cli/cli/OrganizationDeleteCLI.cpp
@@ -187,7 +189,27 @@ add_library(${PROJECT_NAME} SHARED
         include/udocs-processor/cli/cli/QuotaListCLI.h
         include/udocs-processor/cli/cli/TokenCreateCLI.h
         include/udocs-processor/cli/cli/TokenListCLI.h
-        )
+        include/udocs-processor/cli/commands/oauth2/OAuth2.h
+        cli/commands/oauth2/HydraOAuth2.cpp
+        include/udocs-processor/cli/commands/oauth2/HydraOAuth2.h
+        include/udocs-processor/cli/StandardInputReader.h
+        cli/commands/security/WindowsVault.cpp
+        include/udocs-processor/cli/commands/security/Vault.h
+        include/udocs-processor/cli/commands/security/WindowsVault.h
+        cli/cli/token/TokenLoader.cpp
+        include/udocs-processor/cli/cli/token/TokenLoader.h
+        cli/cli/util/CliHelper.cpp
+        include/udocs-processor/cli/cli/util/CliHelper.h
+        cli/version/AdsManager.cpp
+        include/udocs-processor/cli/version/AdsManager.h
+        cli/version/DefaultAds.cpp
+        include/udocs-processor/cli/version/DefaultAds.h
+        cli/SSLInitializer.cpp
+        include/SSLInitializer.h
+        cli/views/FtxMigrateView.cpp
+        cli/commands/MigrateCommand.cpp
+        cli/cli/MigrateCLI.cpp
+        include/udocs-processor/cli/commands/MigrateCommand.h)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "M-UDocs-CLI")
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN/")
@@ -205,6 +227,12 @@ target_link_libraries(${PROJECT_NAME}
         udocs-processor_module_processor
         udocs-processor_module_serializer
         udocs-processor_module_util
+        Poco::Foundation
+        Poco::Data
+        Poco::Util
+        Poco::Net
+        Poco::NetSSL
+        cryptopp::cryptopp
         CLI11::CLI11
         Boost::boost
         termcolor::termcolor

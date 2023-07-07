@@ -11,14 +11,20 @@
 #include "udocs-processor/cli/commands/ProjectCollaboratorAddCommand.h"
 #include "udocs-processor/cli/views/ProjectCollaboratorAddView.h"
 #include "udocs-processor/telemetry/BasicTelemetry.h"
+#include "udocs-processor/cli/cli/token/TokenLoader.h"
 
 namespace udocs_processor {
 class ProjectCollaboratorAddCLI {
  public:
-  struct Arguments {};
+  struct Arguments {
+    std::string Location;
+    std::string Email;
+    TokenLoader::TokenSource Source = TokenLoader::TokenSource::NO_PREFERENCE;
+  };
 
   ProjectCollaboratorAddCLI(std::shared_ptr<spdlog::sinks::sink> Sink,
       std::unique_ptr<ProjectCollaboratorAddCommand> Command,
+      std::shared_ptr<TokenLoader> Token,
       std::shared_ptr<BasicTelemetry> Telemetry);
 
   bool AddProjectCollaborator(const Arguments& Args) const;
@@ -41,5 +47,6 @@ class ProjectCollaboratorAddCLI {
   std::shared_ptr<spdlog::logger> l;
 
   std::shared_ptr<BasicTelemetry> Telemetry;
+  std::shared_ptr<TokenLoader> Token;
 };
 }  // namespace udocs_processor

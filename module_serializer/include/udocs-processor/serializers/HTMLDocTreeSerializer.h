@@ -122,6 +122,7 @@ class HTMLDocTreeSerializer {
   constexpr static char PREVIOUS_PAGE[] = "prev";
   constexpr static char INSTANCE[] = "instance";
   constexpr static char PROJECT[] = "project";
+  constexpr static char IS_LOCAL[] = "is_local";
   constexpr static char NEXT_PAGE[] = "next";
   constexpr static char PAGE_LINK[] = "link";
   constexpr static char PAGE_TITLE[] = "title";
@@ -163,10 +164,14 @@ class HTMLDocTreeSerializer {
   constexpr static char PROTOCOL_MARKER[] = "://";
   constexpr static char URL_SEPARATOR[] = "/";
 
+  constexpr static char TIME_LOCAL[] = "local";
   constexpr static char TIME_YEARS[] = "years";
   constexpr static char TIME_MONTHS[] = "months";
   constexpr static char TIME_WEEKS[] = "weeks";
   constexpr static char TIME_DAYS[] = "days";
+  constexpr static char TIME_DAY[] = "day";
+  constexpr static char TIME_MONTH[] = "month";
+  constexpr static char TIME_YEAR[] = "year";
 
   constexpr static int MONTHS_IN_YEAR = 12;
   constexpr static int WEEKS_PER_MONTH = 4;

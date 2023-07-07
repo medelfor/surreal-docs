@@ -10,5 +10,8 @@
 namespace udocs_processor {
 class AuthView : public virtual SimpleView {
  public:
+  virtual void ReportSuccess() = 0;
+
+  ~AuthView() override = default;
 };
 }  // namespace udocs_processor

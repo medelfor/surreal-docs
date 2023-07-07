@@ -9,14 +9,17 @@
 #include "udocs-processor/cli/views/GenerateView.h"
 #include "udocs-processor/cli/surreal/SurrealLoader.h"
 #include "udocs-processor/telemetry/BasicTelemetry.h"
+#include "udocs-processor/cli/cli/token/TokenLoader.h"
 
 namespace udocs_processor {
 class GenerateCLI {
  public:
   struct Arguments {
-    bool DoDeploy = false;
     bool IsInteractive = true;
+    bool DoCleanOut = false;
     std::string OutDirectory;
+    std::optional<std::string> DeployLocation;
+    TokenLoader::TokenSource Source = TokenLoader::TokenSource::NO_PREFERENCE;
   };
 
   GenerateCLI(std::shared_ptr<spdlog::sinks::sink> Sink,
@@ -24,6 +27,7 @@ class GenerateCLI {
       std::unique_ptr<GenerateView> InteractiveView,
       std::unique_ptr<GenerateView> NonInteractiveView,
       std::shared_ptr<SurrealLoader> Loader,
+      std::shared_ptr<TokenLoader> Token,
       std::shared_ptr<BasicTelemetry> Telemetry);
 
   bool Generate(const Arguments& Args) const;
@@ -51,5 +55,6 @@ class GenerateCLI {
   std::shared_ptr<spdlog::logger> l;
   std::map<GenerateCommand::Status, GenerateView::Status>
       GenerateStatusToStatus;
+  std::shared_ptr<TokenLoader> Token;
 };
 }  // namespace udocs_processor

@@ -168,6 +168,10 @@ ftxui::Decorator udocs_processor::FtxView::ErroneuousColor() const {
   return ftxui::color(ErroneuousColor_);
 }
 
+ftxui::Decorator udocs_processor::FtxView::WarningColor() const {
+  return ftxui::color(WarningColor_);
+}
+
 void udocs_processor::FtxView::Init() {
   SendLogsButton = ftxui::Button("Report log", [this]() {
     std::optional<std::string> ContactBack;

@@ -64,6 +64,7 @@ target_link_libraries(${PROJECT_NAME}
         md4c::md4c
         Crc32c::Crc32c
         Boost::boost
+        cryptopp::cryptopp
         Boost::filesystem)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)

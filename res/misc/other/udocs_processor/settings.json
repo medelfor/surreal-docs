@@ -1,5 +1,14 @@
 {
     "api_address": "api.medelfor.com",
     "ca_cert": "certificates\\ca-cert.crt",
+    "surreal_cloud_api_address": "api.surrealdocs.com",
+    "callback": {
+        "port": 19741
+    },
+    "oauth2": {
+        "host": "hydra.medelfor.com",
+        "port": 443,
+        "client_id": "d71cd4a7-2fc3-499d-949e-fdc31154b46d"
+    },
     "do_use_https": true
 }

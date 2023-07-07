@@ -19,17 +19,17 @@ bool udocs_processor::TokenListCLI::ListTokens(
       try {
         TokenListCommand::ListRequest Request = MakeRequest(Args);
 
-        Command->List(Request);
+        std::vector<udocs_processor::TokenService::StrippedTokenData> Tokens =
+            Command->List(Request);
+        CliView->ShowTokens(Tokens);
       } catch (const std::exception& Exc) {
         Success = false;
         Telemetry->ReportFail(TELEMETRY_COMMAND_NAME, Exc.what());
         l->error("Exception in token list thread: {}", Exc.what());
-        CliView->SetFinished(true);
+        CliView->ReportError(Exc.what());
       }
 
-      if (Success) {
-        CliView->SetFinished(true);
-      }
+      CliView->SetFinished(true);
     });
 
   auto ViewThread = std::thread(

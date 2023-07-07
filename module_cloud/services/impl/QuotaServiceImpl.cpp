@@ -5,9 +5,16 @@
 #include <udocs-processor/services/impl/QuotaServiceImpl.h>
 
 udocs_processor::QuotaServiceImpl::QuotaServiceImpl(
+    std::shared_ptr<spdlog::sinks::sink> Sink,
     std::shared_ptr<grpc::Channel> Channel) {
   Quota = std::make_unique<surapi::Quota::Stub>(Channel);
   l = spdlog::get(LOGGER_NAME);
+  if (!l) {
+    l = std::make_shared<spdlog::logger>(LOGGER_NAME);
+    if (Sink) {
+      l->sinks().emplace_back(Sink);
+    }
+  }
 }
 
 udocs_processor::QuotaService::ListQuotaResponse

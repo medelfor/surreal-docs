@@ -1,6 +1,7 @@
 /* Copyright © 2022, Medelfor, Limited. All rights reserved. */
 
 #include <fmt/format.h>
+#include <set>
 #include "udocs-processor/cli/views/FtxInitView.h"
 #include "udocs-processor/cli/CLISignalHandler.h"
 
@@ -82,7 +83,7 @@ void udocs_processor::FtxInitView::SelectTarget(
 }
 
 void udocs_processor::FtxInitView::SelectSources(
-    const std::vector<int> &Sources) {
+    const std::set<int> &Sources) {
   std::lock_guard<std::mutex> Lock{SelectionsProtection};
 
   for (int SourceIndex : Sources) {
@@ -421,4 +422,14 @@ const std::string &udocs_processor::FtxInitView::GetContactMeAt() const {
 
 void udocs_processor::FtxInitView::SetContactMeAt(std::string ContactMeAt) {
   this->ContactMeAt = std::move(ContactMeAt);
+}
+
+std::set<int> udocs_processor::FtxInitView::GetSelectedSourceIndices() const {
+  std::set<int> Result;
+  for (size_t i = 0; i < SelectedSources.size(); ++i) {
+    if (SelectedSources[i]) {
+      Result.emplace(i);
+    }
+  }
+  return Result;
 }

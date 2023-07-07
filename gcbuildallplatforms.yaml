@@ -24,7 +24,7 @@ steps:
 #           'https://artifactory.dev.internal.medelfor.com/artifactory/api/conan/medelfor-central',
 #           '$$STAGES_RESULTS_DIR', 'artifacts.medelfor.com', '${BUILD_ID}', '${COMMIT_SHA}',
 #           'win64-build-machine-artifpush@avtomatikka.iam.gserviceaccount.com', '${PROJECT_ID}',
-#           'buildbot', '', 'udocs-processor:${_GS_SAVE_SEPARATE_VERSION}', 'linux', 'true', 'udocs-processor']
+#           'buildbot', '', 'udocs-processor:${_GS_SAVE_SEPARATE_VERSION}', 'linux', 'false', 'udocs-processor']
 #
 #  - name: 'gcr.io/avtomatikka/buildtoolset:latest'
 #    dir: 'scripts/cicd/buildmasterset'
@@ -100,7 +100,7 @@ steps:
     entrypoint: 'bash'
     args: ['general/shutdown_artifactory.sh']
 
-timeout: 3600s
+timeout: 7200s
 options:
   env: ['STAGES_RESULTS_DIR=stages_results']
 availableSecrets:

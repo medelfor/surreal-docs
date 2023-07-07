@@ -15,7 +15,9 @@ enum class ClassType {
   Widget,
   FunctionLibrary,
   Component,
-  Actor
+  Actor,
+  DeveloperSettings,
+  Subsystem
 };
 
 class BlueprintClassNode

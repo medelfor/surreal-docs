@@ -12,10 +12,19 @@ namespace udocs_processor {
 class FtxProjectCollaboratorListView
     : public virtual ProjectCollaboratorListView, public virtual FtxSimpleView {
  public:
-  FtxProjectCollaboratorListView();
+  FtxProjectCollaboratorListView() = default;
+
+  void Init() override;
+
+  void ShowCollaboratos(std::vector<std::string> Collaborators) override;
+
+  ~FtxProjectCollaboratorListView() override = default;
 
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The project collaborator(s) were successfuly retrieved";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Retrieving the collaborators...";
+  static constexpr const char* COLLABORATOR_FORMAT = " {}";
 };
 }  // namespace udocs_processor

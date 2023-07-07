@@ -19,17 +19,15 @@ bool udocs_processor::ProjectListCLI::ListProjects(
       try {
         ProjectListCommand::ListRequest Request = MakeRequest(Args);
 
-        Command->List(Request);
+        CliView->ShowProjects(Command->List(Request));
       } catch (const std::exception& Exc) {
         Success = false;
         Telemetry->ReportFail(TELEMETRY_COMMAND_NAME, Exc.what());
         l->error("Exception in project list thread: {}", Exc.what());
-        CliView->SetFinished(true);
+        CliView->ReportError(Exc.what());
       }
 
-      if (Success) {
-        CliView->SetFinished(true);
-      }
+      CliView->SetFinished(true);
     });
 
   auto ViewThread = std::thread(
@@ -54,7 +52,11 @@ bool udocs_processor::ProjectListCLI::ListProjects(
 udocs_processor::ProjectListCommand::ListRequest
     udocs_processor::ProjectListCLI::MakeRequest(
         const Arguments& Args) const {
-  return {};
+  ProjectListCommand::ListRequest Request;
+  Request.Token = Token->LoadToken(Args.Source);
+  Request.Organization = Args.Organization;
+
+  return Request;
 }
 
 void udocs_processor::ProjectListCLI::SetView(
@@ -65,8 +67,9 @@ void udocs_processor::ProjectListCLI::SetView(
 udocs_processor::ProjectListCLI::ProjectListCLI(
   std::shared_ptr<spdlog::sinks::sink> Sink,
   std::unique_ptr<ProjectListCommand> Command,
+  std::shared_ptr<TokenLoader> Token,
   std::shared_ptr<BasicTelemetry> Telemetry)
-    : Command(std::move(Command)), Telemetry(Telemetry) {
+    : Command(std::move(Command)), Telemetry(Telemetry), Token(Token) {
   l = spdlog::get(LOGGER_NAME);
   if (!l) {
     l = std::make_shared<spdlog::logger>(LOGGER_NAME);

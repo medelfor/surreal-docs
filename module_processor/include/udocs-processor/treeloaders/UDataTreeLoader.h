@@ -265,6 +265,8 @@ class UDataTreeLoader : public TreeLoader {
   constexpr static char CLASS_TYPE_WIDGET[] = "widget";
   constexpr static char CLASS_TYPE_LIBRARY[] = "function_library";
   constexpr static char CLASS_TYPE_ACTOR[] = "actor";
+  constexpr static char CLASS_TYPE_DEVSETTINGS[] = "devsettings";
+  constexpr static char CLASS_TYPE_SUBSYSTEM[] = "subsystem";
 
   constexpr static char PROPERTY_TYPE[] = "type";
   constexpr static char PROPERTY_IS_INSTANCE_EDITABLE[] =

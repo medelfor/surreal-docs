@@ -9,15 +9,22 @@
 
 namespace udocs_processor {
 class SimpleView : public virtual View {
- protected:
-  virtual void ReportSuccess(const std::string& Message) = 0;
-
+ public:
   virtual void ReportError(const std::string& Message) = 0;
 
   virtual void ReportWarning(const std::string& Message) = 0;
 
+  virtual void ShowDescription(const std::string& Description) = 0;
+
+  virtual void ShowList(std::vector<std::string> List) = 0;
+
+  ~SimpleView() override = default;
+
+ protected:
+  virtual bool Confirm(const std::string& Message) = 0;
+
   virtual void ReportProgress(const std::string& Message) = 0;
 
-  virtual void ShowList(const std::vector<std::string>& List) = 0;
+  virtual void ReportSuccess(const std::string& Message) = 0;
 };
 }  // namespace udocs_processor

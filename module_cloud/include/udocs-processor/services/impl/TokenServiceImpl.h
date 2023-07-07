@@ -2,17 +2,18 @@
 
 #pragma once
 
-#include <memory>
+#include <grpcpp/channel.h>
 #include <spdlog/logger.h>
-#include <grpcpp/channel.h>
-#include <grpcpp/channel.h>
+#include <memory>
+#include <string>
 #include "surapi/Token.grpc.pb.h"
 #include "udocs-processor/services/TokenService.h"
 
 namespace udocs_processor {
 class TokenServiceImpl : public TokenService {
  public:
-  explicit TokenServiceImpl(std::shared_ptr<grpc::Channel> Channel);
+  TokenServiceImpl(std::shared_ptr<spdlog::sinks::sink> Sink,
+      std::shared_ptr<grpc::Channel> Channel);
 
   CreateTokenResponse Create(const CreateTokenRequest &Request) const override;
 
@@ -22,6 +23,6 @@ class TokenServiceImpl : public TokenService {
   std::shared_ptr<spdlog::logger> l;
   std::unique_ptr<surapi::Token::Stub> Token;
 
-  constexpr static char LOGGER_NAME[] = "medelfor-surapi";
+  constexpr static char LOGGER_NAME[] = "cloud-layer";
 };
 }  // namespace udocs_processor

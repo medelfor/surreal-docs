@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <udocs-processor//ApiStatus.h>
+#include <udocs-processor/ApiStatus.h>
 #include <grpcpp/support/status.h>
 #include "api/Status.pb.h"
 
@@ -18,4 +18,4 @@ class grpcHelper {
 
  private:
 };
-}  // namespace surapi
+}  // namespace udocs_processor

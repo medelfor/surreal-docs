@@ -36,6 +36,8 @@ class FtxView : public virtual View {
 
   ftxui::Decorator SuccessColor() const;
 
+  ftxui::Decorator WarningColor() const;
+
   std::shared_ptr<ftxui::Node> WrapError(
       const std::string& ErrorDescription, bool HasErrored) const;
 
@@ -47,6 +49,8 @@ class FtxView : public virtual View {
 
   void Tick() override;
 
+  ~FtxView() override = default;
+
   static constexpr size_t STANDARD_GAP_SIZE = 3;
   const ftxui::Color BackgroundColor_ = ftxui::Color{18, 18, 18};
   // 15, 11, 10};//1, 2, 20};//23, 27, 51};
@@ -57,6 +61,7 @@ class FtxView : public virtual View {
   const ftxui::Color HeadingColor_ = ftxui::Color::White;
   const ftxui::Color HeadingBackgroundColor_ = ftxui::Color{186, 18, 0};
   const ftxui::Color ErroneuousColor_ = ftxui::Color::LightCoral;
+  const ftxui::Color WarningColor_ = ftxui::Color::Yellow1;
   const ftxui::Color SuccessColor_ = ftxui::Color::SeaGreen1;
 
   // 79, 78, 77};//12, 13, 23};//75, 99, 219};

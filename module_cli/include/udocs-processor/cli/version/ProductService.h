@@ -4,6 +4,7 @@
 
 #include <string>
 #include <cstdint>
+#include <vector>
 #include "udocs-processor/ApiStatus.h"
 
 namespace udocs_processor {
@@ -18,7 +19,21 @@ class ProductService {
     std::string Version;
   };
 
+  struct BroadcastMessage {
+    std::string Payload;
+    std::string Id;
+    std::string Format;
+  };
+
+  struct GetBroadcastResponse {
+    ApiStatus Status;
+    std::vector<BroadcastMessage> Messages;
+  };
+
   virtual LatestVersionResponse GetLatestVersion(
+      const std::string& ProductId) = 0;
+
+  virtual GetBroadcastResponse GetBroadcast(
       const std::string& ProductId) = 0;
 };
 }  // namespace udocs_processor

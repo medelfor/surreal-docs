@@ -12,10 +12,18 @@ namespace udocs_processor {
 class FtxProjectAnnounceView : public virtual ProjectAnnounceView,
     public virtual FtxSimpleView {
  public:
-  FtxProjectAnnounceView();
+  FtxProjectAnnounceView() = default;
+
+  void Init() override;
+
+  void ReportSuccess() override;
+
+  ~FtxProjectAnnounceView() override = default;
 
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The announcement was successfuly made";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Announcing...";
 };
 }  // namespace udocs_processor

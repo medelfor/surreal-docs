@@ -14,8 +14,18 @@ class FtxOrganizationListView : public virtual OrganizationListView,
  public:
   FtxOrganizationListView();
 
+  ~FtxOrganizationListView() override = default;
+
+  void Init() override;
+
+  void ShowOrganizations(
+      const std::vector<std::string> &Organizations) override;
+
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The organization(s) were successfuly retrieved";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Retrieving the organizations...";
+  static constexpr const char* ORGANIZATION_FORMAT = " {}";
 };
 }  // namespace udocs_processor

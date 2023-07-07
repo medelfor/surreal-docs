@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 #include "InitView.h"
 #include "FtxView.h"
@@ -41,7 +42,7 @@ class FtxInitView : public InitView, public FtxView {
 
   void SelectTarget(const std::string &Target) override;
 
-  void SelectSources(const std::vector<int> &Sources) override;
+  void SelectSources(const std::set<int> &Sources) override;
 
   void Init() override;
 
@@ -67,6 +68,8 @@ class FtxInitView : public InitView, public FtxView {
 
   std::vector<UnrealInteraction::Source> GetSelectedSources() const override;
 
+  std::set<int> GetSelectedSourceIndices() const override;
+
   std::optional<UnrealInteraction::UnrealVersion>
       GetSelectedEngineVersion() const override;
 
@@ -77,6 +80,8 @@ class FtxInitView : public InitView, public FtxView {
   bool DoExportPrivate() const override;
 
   void SetDoExportPrivate(bool DoExport) override;
+
+  ~FtxInitView() override = default;
 
  private:
   bool HasFinished() const;

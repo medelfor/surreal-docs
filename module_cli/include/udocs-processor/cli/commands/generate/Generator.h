@@ -11,6 +11,8 @@
 #include "udocs-processor/serializers/DynamicPageData.h"
 #include "udocs-processor/serializers/JSONDocTreeSerializer.h"
 #include "udocs-processor/cli/commands/generate/rendering/UDocsDocumentRenderer.h"
+#include "udocs-processor/services/ProjectService.h"
+#include "udocs-processor/services/DocumentService.h"
 
 #undef ERROR
 
@@ -23,6 +25,7 @@ class Generator {
     SERIALIZING_INTERNAL,
     SERIALIZING_IMAGES,
     SERIALIZING_HTML,
+    DEPLOYING,
     FINALIZING,
     CLEANING_UP,
     FINISHED,
@@ -43,15 +46,27 @@ class Generator {
     std::string InputDocs;
     bool DoExportPrivate = true;
     ExportFormat Format = ExportFormat::HTML;
+    bool DoDeploy = false;
+    std::string Organization;
+    std::string Project;
+    std::string Token;
+    std::string Version;
+    bool DoesVersionExist = false;
   };
 
-  explicit Generator(std::shared_ptr<spdlog::sinks::sink> Sink);
+  Generator(std::unique_ptr<DocumentService> Documents,
+      std::shared_ptr<ProjectService> Projects,
+      std::shared_ptr<spdlog::sinks::sink> Sink);
 
   std::vector<udocs_processor::ManifestEntry>
       Generate(const GenerationRequest& Request,
           const CallbackType& StageCallback) const;
 
   void SetResourcesPath(std::string ResourcesPath);
+
+  void SetBinaryPath(std::string BinaryPath);
+
+  void SetInstallPath(std::string InstallPath);
 
   void SetRenderer(std::unique_ptr<UDocsDocumentRenderer> Renderer);
 
@@ -62,7 +77,11 @@ class Generator {
 
   void SerializeToHtml(const GenerationRequest& Request,
       const CallbackType& StageCallback,
-      const std::vector<udocs_processor::ManifestEntry>& Manifest) const;
+      const std::vector<ManifestEntry>& Manifest) const;
+
+  void Deploy(const GenerationRequest& Request,
+      const CallbackType& StageCallback,
+      const std::vector<ManifestEntry>& Manifest) const;
 
   static constexpr const char* TYPE_TEMPLATE =
       "html/udocs_processor/types/Type.html";
@@ -93,10 +112,14 @@ class Generator {
   static const size_t MAX_IMAGE_FILESIZE = 1024 * 1024 * 4;  // 4MB
   static const size_t MAX_PAGE_FILESIZE = 1024 * 1024 * 2;  // 2MB
 
+  std::unique_ptr<DocumentService> Documents;
+  std::shared_ptr<ProjectService> Projects;
   std::vector<std::string> ResourcesToCopy;
   std::shared_ptr<spdlog::sinks::sink> Sink;
   std::shared_ptr<spdlog::logger> l;
   std::string ResourcesPath;
+  std::string BinaryPath;
+  std::string InstallPath;
   std::unique_ptr<UDocsDocumentRenderer> Renderer;
 };
 }  // namespace udocs_processor

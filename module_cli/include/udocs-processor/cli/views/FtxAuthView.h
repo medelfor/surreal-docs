@@ -13,8 +13,16 @@ class FtxAuthView : public virtual AuthView, public virtual FtxSimpleView {
  public:
   FtxAuthView();
 
+  void ReportSuccess() override;
+
+  void Init() override;
+
+  ~FtxAuthView() override = default;
+
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char PROGRESS_MESSAGE[] =
+      "Storing the token in the vault";
+  static constexpr const char TOKEN_SUCCESS_MESSAGE[] =
+      "Token was successfully stored";
 };
 }  // namespace udocs_processor

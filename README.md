@@ -11,12 +11,12 @@
 
 ***
 
-Surreal Docs is the first all-encompassing docs generation system for Unreal Engine-powered projects. It generates documentation for Unreal Engine projects, C++ and Blueprint API references in particular. It enables users to create their own custom pages using a feature-rich dialect of Markdown. Surreal Docs seamlessly integrates with our online docs hosting - Surreal Cloud, making it easy to share the docs publicly, privately with a team or within an organization. Finally, Surreal Docs perfectly understands all UE-specific C++ features, Blueprints and easily interweaves corresponding C++ and Blueprint entities in the resulting documentation!
+Surreal Docs is a comprehensive documentation generation system designed specifically for Unreal Engine-powered projects. It generates documentation for both C++ and Blueprint API references, and provides users with the ability to create custom pages using a feature-rich dialect of Markdown. Additionally, Surreal Docs seamlessly integrates with Surreal Cloud, our online documentation hosting platform, allowing users to easily share their documentation with others. Finally, Surreal Docs has a deep understanding of all UE-specific C++ features and Blueprints, what allows it to cleverly interweave C++ and BP entities in the resulting documentation.
 
-The latest version of Surreal Docs is `1.0.5`
+The latest version of Surreal Docs is `1.1.0`
 
 ***
-<i align="center">If you find the product useful - give us a star as a gesture of appreciation</i>
+<i align="center">If you find the product useful - consider giving it a star</i>
 ***
 
 **Table of Contents**
@@ -38,10 +38,7 @@ The latest version of Surreal Docs is `1.0.5`
 ## Install
 
 To install Surreal Docs please download the latest installer from the Releases
-page and run it. Note, that in order to work correctly Surreal Docs 
-requires NodeJS (at least 10.18.1) to be installed with `npm` being available in PATH.
-If no NodeJS is already installed on your system, Surreal Docs installer will
-install an appropriate version (18.16.0) automatically.
+page and run it.
 
 Note also that in order to work Surreal Docs requires Microsoft Visual Studio to
 be installed on your machine.
@@ -92,6 +89,14 @@ something goes wrong.
 Note that the first time you run `surdocs generate` the generation will take some
 extra time, since Surreal Docs needs to compile the plugin it installs in order
 to link with Unreal Engine.
+
+In order to deploy your documentation to Surreal Cloud, add the `--deploy` option to your command. This option specifies organization and the project where the documentation should go to. You can find more info on the [generate page](docs/cli/generate "generate description").
+
+```
+surdocs generate <output directory> --deploy=<org>/<project>
+```
+
+Note that this functionality is available for those users only who own an active Surreal Cloud, Surreal Cloud+ or Surreal Cloud Pro subscription. You can find more info about Surreal Cloud [here](docs/surreal-cloud "Surreal Cloud").
 
 You can find more info that will help you get up to speed on the ["Quickstart"](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/quickstart "Quickstart") page.
 
@@ -151,7 +156,10 @@ You can find more info about global options available in Surreal Docs CLI on the
 Your privacy is important to us! While you can read more about your privacy when
 using Surreal Docs in the EULA, you can be sure that we **do not**, under any 
 circumstances, collect or send to ourselves (or any 3rd parties) neither
-the source code of your project nor the generated documentation.
+the source code of your project nor the generated documentation[1].
+
+***
+[1] We do send your documentation (but not source code) to our serves in case you requested deployment of the documentation into [Surreal Cloud](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/surreal-cloud "Surreal Cloud").
 
 ## Build
 
@@ -176,7 +184,7 @@ contributions made by our users!
 
 ## What we're doing right now
 
-Currently, we are working on bringing support of Surreal Cloud product series to Surreal Docs CLI. The work will be finished by the end of June.
+We're in the mode of general maintenance and eventual features implementation.
 
 ## Performance
 
@@ -224,11 +232,13 @@ Currently, Surreal Docs cannot be used without an Unreal Engine project, but we
 plan to add an ability to generate documentation with no attachments to UE, BP 
 or C++ in the nearest future.
 
-### How can I get rid of the watermarks on Blueprint function images?
+### How can I get rid of the watermarks on Blueprint function images and warnings in the footer?
 
-Uploading documentation to Surreal Cloud, Surreal Cloud+ or Surreal Cloud Pro, will not result in any watermarks being added to the images. Surreal Cloud and Surreal Cloud+ will be available by the end of June, and you'll be able to purchase subscriptions to them in [our store](https://store.medelfor.com "Medelfor Store").
+Uploading documentation to Surreal Cloud, Surreal Cloud+ or Surreal Cloud Pro, will not result in neither watermarks being added to the images nor the warnings added to the footer. You can purchase a subscription to Surreal Cloud, Surreal Cloud+ or Surreal Cloud Pro in [our store](https://store.medelfor.com "Medelfor Store").
 
 Surreal Cloud hostings offer several additional benefits, such as the use of pretty page URLs. For example, instead of something like `api+blueprint+Jetpack+90ba7e62+11c4c855.html` you will get a much more user-friendly URL like `/medelfor/showcase-1/1.1.0/en-US/api/blueprint/Jetpack/Jetpack/Blow_It_Up`. Moreover Surreal Cloud provides SEO-optimized page rendering, versioning and premium support from the Medelfor team to its subscribers.
+
+More info on whether you should choose Surreal Cloud or a 3rd party hosting platform you can find on [Surreal Cloud](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/surreal-cloud "Surreal Cloud") page.
 
 ## License
 
@@ -273,14 +283,14 @@ any use case and in every price range!
 [Surreal Cloud](https://medelfor.com/#surreal-cloud "Surreal Cloud") - a
 serverless and auto-scaling cloud hosting for public documentation. Surreal
 Cloud is the easiest way to make your documentation available to everyone on
-the internet. Starts at $17/month (excl. VAT/GST).
+the internet. Starts at $7.99/month (excl. VAT/GST).
 
 <img src="readme/SurrealDocsCloudPlus50.png" align="left"/>
 
 [Surreal Cloud+](https://medelfor.com/#surreal-cloud-plus "Surreal Cloud+") -
 a Medelfor's cloud for public and private documentation. Surreal
 Cloud+ is the best way to share your documentation privately with your team.
-Starts at $25/month (excl. VAT/GST).
+Starts at $14.99/month (excl. VAT/GST).
 
 <img src="readme/SurrealDocsCloudPro50.png" align="left"/>
 
@@ -288,7 +298,7 @@ Starts at $25/month (excl. VAT/GST).
 the pinnacle of Surreal Cloud technology. Includes an on-premises variant
 of Surreal Cloud and the online cloud for private and public documentation.
 Surreal Cloud Pro is the perfect choice for companies who want to share their
-documentation within the organization. Starts at $70/month (excl. VAT/GST).
+documentation within the organization. Starts at $39.99/month (excl. VAT/GST).
 
 Any Surreal Cloud solution integrates 100% seamlessly with Surreal Docs.
 

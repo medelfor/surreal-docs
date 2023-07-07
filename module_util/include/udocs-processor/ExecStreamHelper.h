@@ -16,8 +16,11 @@ class ExecStreamHelper {
 
   static ProcessResult Run(const std::vector<std::string>& Arguments);
 
+  static ProcessResult RunNoEscape(const std::vector<std::string>& Arguments);
+
  private:
   static constexpr const char* NEWLINE = "\n";
   static constexpr const char* ARGUMENTS_JOINER = "\" \"";
+  static constexpr const char* ARGUMENTS_SEPARATOR = " ";
 };
 }  // namespace udocs_processor

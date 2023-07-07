@@ -11,14 +11,18 @@
 #include "udocs-processor/cli/commands/OrganizationListCommand.h"
 #include "udocs-processor/cli/views/OrganizationListView.h"
 #include "udocs-processor/telemetry/BasicTelemetry.h"
+#include "udocs-processor/cli/cli/token/TokenLoader.h"
 
 namespace udocs_processor {
 class OrganizationListCLI {
  public:
-  struct Arguments {};
+  struct Arguments {
+    TokenLoader::TokenSource Source = TokenLoader::TokenSource::NO_PREFERENCE;
+  };
 
   OrganizationListCLI(std::shared_ptr<spdlog::sinks::sink> Sink,
       std::unique_ptr<OrganizationListCommand> Command,
+      std::shared_ptr<TokenLoader> Token,
       std::shared_ptr<BasicTelemetry> Telemetry);
 
   bool ListOrganizations(const Arguments& Args) const;
@@ -39,5 +43,6 @@ class OrganizationListCLI {
   std::shared_ptr<spdlog::logger> l;
 
   std::shared_ptr<BasicTelemetry> Telemetry;
+  std::shared_ptr<TokenLoader> Token;
 };
 }  // namespace udocs_processor

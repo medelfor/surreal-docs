@@ -10,6 +10,7 @@
 #include "udocs-processor/cli/commands/generate/CppPreparer.h"
 #include "udocs-processor/cli/commands/generate/BpPreparer.h"
 #include "udocs-processor/cli/commands/generate/Generator.h"
+#include "udocs-processor/services/ProjectService.h"
 
 namespace udocs_processor {
 class GenerateCommand {
@@ -34,9 +35,17 @@ class GenerateCommand {
     std::string Target;
     std::string Configuration;
     bool DoUseCmd = false;
+    bool DoCleanOut = false;
+    bool DoDeploy = false;
+    std::string Organization;
+    std::string Project;
+    std::string Token;
+    std::string Version;
   };
 
   enum class Status {
+    PREDEPLOYING,
+    PURGING_OUT_DIR,
     COMPILING,
     EXTRACTING_FROM_BP,
     EXTRACTING_FROM_CPP,
@@ -44,6 +53,7 @@ class GenerateCommand {
     PROCESSING,
     SERIALIZING_INTERNAL,
     SERIALIZING_IMAGES,
+    DEPLOYING,
     SERIALIZING_HTML,
     FINALIZING,
     CLEANING_UP,
@@ -55,7 +65,7 @@ class GenerateCommand {
 
   GenerateCommand(std::shared_ptr<spdlog::sinks::sink> Sink,
       std::unique_ptr<BpPreparer> Bp, std::unique_ptr<CppPreparer> Cpp,
-      std::unique_ptr<Generator> Gen);
+      std::shared_ptr<ProjectService> Project, std::unique_ptr<Generator> Gen);
 
   void Generate(const GenerateRequest& Request,
       const CallbackType& StatusCallback) const;
@@ -69,6 +79,7 @@ class GenerateCommand {
   static constexpr const char* UDATA_AT = "bp_wd/udata.json";
   static constexpr const char* DOXY_JSON_AT = "cpp_wd/json";
 
+  std::shared_ptr<ProjectService> Project;
   std::unique_ptr<BpPreparer> Bp;
   std::unique_ptr<CppPreparer> Cpp;
   std::unique_ptr<Generator> Gen;
@@ -77,5 +88,10 @@ class GenerateCommand {
       Generator::GenerationRequest::ExportFormat> Formats;
   std::map<BpPreparer::Status, Status> BpStatusToStatus;
   std::map<Generator::Status, Status> GenStatusToStatus;
+
+  void PerformDeployPreCheck(const std::string &Organization,
+      const std::string &Project, const std::string &Token,
+      const std::string &Version,
+      Generator::GenerationRequest& GenRequest) const;
 };
 }  // namespace udocs_processor

@@ -2,10 +2,10 @@
 
 #include "udocs-processor/cli/cli/InitCLI.h"
 #include <spdlog/spdlog.h>
+#include <set>
 #include <future> NOLINT()
 #include <thread> NOLINT()
 #include <chrono> NOLINT()
-#include <set>
 
 #undef ERROR
 
@@ -74,11 +74,10 @@ bool udocs_processor::InitCLI::Init(
 }
 
 void udocs_processor::InitCLI::InitializeView(
-    const SurrealProject& Project) const {
+    const SurrealProject& Project) {
   std::vector<UnrealInteraction::UnrealVersion> Versions =
       Ue->EnumerateVersions();
-  std::vector<UnrealInteraction::Source> Sources =
-      Ue->EnumerateSources(CURRENT_DIRECTORY);
+  Sources = Ue->EnumerateSources(CURRENT_DIRECTORY);
   std::map<std::string, std::optional<std::string>> Targets =
       Ue->EnumerateTargets(CURRENT_DIRECTORY);
 
@@ -110,7 +109,6 @@ void udocs_processor::InitCLI::InitializeView(
     }
   }
 
-  std::vector<int> SelectedSources;
   for (const auto& CppInclude : Project.CppInputs) {
     std::filesystem::path IncludePath = Absolutify(CppInclude);
 
@@ -119,12 +117,12 @@ void udocs_processor::InitCLI::InitializeView(
       std::filesystem::path SourceRoot = Absolutify(Sources[i].Path);
 
       if (IncludePath == SourceRoot) {
-        SelectedSources.emplace_back(i);
+        InitiallySelectedSources.emplace(i);
       }
     }
   }
 
-  InteractiveView->SelectSources(SelectedSources);
+  InteractiveView->SelectSources(InitiallySelectedSources);
 }
 
 std::filesystem::path udocs_processor::InitCLI::Absolutify(
@@ -159,27 +157,40 @@ void udocs_processor::InitCLI::OnDone() {
         }
         Project->Configuration = InteractiveView->GetSelectedConfiguration();
 
-        std::set<std::filesystem::path> ExistingCppIncludes;
-        std::set<std::string> ExistingNativeIncludes;
-
-        for (const auto& Include : Project->CppInputs)
-          ExistingCppIncludes.emplace(Absolutify(Include));
-        for (const auto& Include : Project->NativeInclude)
-          ExistingNativeIncludes.emplace(Include);
-
-        for (auto& Source : InteractiveView->GetSelectedSources()) {
-          if (!ExistingCppIncludes.count(Absolutify(Source.Path))) {
-            std::filesystem::path Path{Source.Path};
-            Path = std::filesystem::weakly_canonical(Path).
-                make_preferred().string();
+        std::set<int> CurrentlySelected =
+            InteractiveView->GetSelectedSourceIndices();
+        for (size_t i = 0; i < Sources.size(); ++i) {
+          UnrealInteraction::Source Source = Sources[i];
+          bool WasPresented = InitiallySelectedSources.count(i);
+          bool IsPresented = CurrentlySelected.count(i);
+          std::filesystem::path Path{Source.Path};
+          Path = std::filesystem::weakly_canonical(Path).
+              make_preferred().string();
+          if (WasPresented && !IsPresented) {
+            // removed -> find and remove
+            // n^2, yep
+            for (auto It = Project->CppInputs.begin();
+                It != Project->CppInputs.end();) {
+              if (std::filesystem::path(*It) == Path) {
+                It = Project->CppInputs.erase(It);
+              } else {
+                ++It;
+              }
+            }
+            for (auto It = Project->NativeInclude.begin();
+                 It != Project->NativeInclude.end();) {
+              if (*It == Source.Module) {
+                It = Project->NativeInclude.erase(It);
+              } else {
+                ++It;
+              }
+            }
+          } else if (!WasPresented && IsPresented) {
+            // included -> add
             Project->CppInputs.emplace_back(Path.string());
-          }
-
-          if (!ExistingNativeIncludes.count(Source.Module)) {
             Project->NativeInclude.emplace_back(Source.Module);
           }
         }
-
         Command->SaveProject(*Project, CURRENT_DIRECTORY);
       } catch (const std::exception& Exc) {
         l->error("Exception in init-saving thread: {}", Exc.what());

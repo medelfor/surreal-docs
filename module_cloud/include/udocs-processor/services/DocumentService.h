@@ -23,10 +23,8 @@ class DocumentService {
         udocs_processor::ManifestEntry::Type::PAGE;
   };
 
-  virtual ApiStatus Add(AddDocumentRequest& Request) = 0;
+  virtual void Add(AddDocumentRequest& Request) = 0;
 
   virtual ApiStatus Finish() = 0;
-
-  // todo add some kind of check before deploy: access, existence, etc
 };
 }  // namespace udocs_processor

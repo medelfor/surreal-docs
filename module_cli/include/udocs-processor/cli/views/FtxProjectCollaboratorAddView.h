@@ -12,10 +12,18 @@ namespace udocs_processor {
 class FtxProjectCollaboratorAddView : public virtual ProjectCollaboratorAddView,
     public virtual FtxSimpleView {
  public:
-  FtxProjectCollaboratorAddView();
+  FtxProjectCollaboratorAddView() = default;
+
+  void Init() override;
+
+  void ReportSuccess() override;
+
+  ~FtxProjectCollaboratorAddView() override = default;
 
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The collaborator was successfuly added to the project";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Adding the collaborator...";
 };
 }  // namespace udocs_processor

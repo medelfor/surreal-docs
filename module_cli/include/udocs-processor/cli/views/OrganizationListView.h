@@ -10,5 +10,9 @@
 namespace udocs_processor {
 class OrganizationListView : public virtual SimpleView {
  public:
+  ~OrganizationListView() override = default;
+
+  virtual void ShowOrganizations(
+      const std::vector<std::string>& Organizations) = 0;
 };
 }  // namespace udocs_processor

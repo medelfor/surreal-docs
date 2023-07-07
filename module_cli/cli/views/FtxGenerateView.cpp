@@ -36,7 +36,7 @@ void udocs_processor::FtxGenerateView::Tick() {
 
   ++FrameCount;
   if (AdFrames == AD_FRAMES) {
-    Ad = (Ad + 1) % AdTexts.size();
+    Ad = (Ad + 1) % Ads.size();
     AdFrames = 0;
   }
   ++AdFrames;
@@ -58,7 +58,9 @@ void udocs_processor::FtxGenerateView::Init() {
 
   using namespace ftxui; NOLINT()
 
-  List = {"", "", ""};
+  for (const auto& Ad : Ads) {
+    List.emplace_back("");
+  }
 
   ExitOnFinish = Container::Vertical({
       Checkbox("Exit Surreal Docs when finished", &DoExit_) | ForegroundColor1()
@@ -105,7 +107,7 @@ void udocs_processor::FtxGenerateView::Init() {
                  vbox({
                      filler(),
                      vbox({
-                         Split(AD_IMAGE)
+                         Split(AdIcon(Ad))
                      }) | color(AdColor(Ad)),
                      filler()
                  }),
@@ -141,23 +143,21 @@ void udocs_processor::FtxGenerateView::Init() {
 }
 
 std::string udocs_processor::FtxGenerateView::AdText(int Ad) const {
-  return AdTexts[Ad];
+  return Ads.size() > Ad ? Ads[Ad].Text : "";
+}
+
+std::string udocs_processor::FtxGenerateView::AdIcon(int Ad) const {
+  return Ads.size() > Ad ? Ads[Ad].Icon : "";
 }
 
 ftxui::Color udocs_processor::FtxGenerateView::AdColor(int Ad) const {
-  return AdColors[Ad];
+  return Ads.size() > Ad
+      ? ftxui::Color(static_cast<ftxui::Color::Palette256>(Ads[Ad].Color))
+      : ftxui::Color::White;
 }
 
 udocs_processor::FtxGenerateView::FtxGenerateView()
-    : Screen(ftxui::ScreenInteractive::Fullscreen()) {
-  AdTexts.emplace_back(AD_0);
-  AdTexts.emplace_back(AD_1);
-  AdTexts.emplace_back(AD_2);
-
-  AdColors.emplace_back(AD_0_COLOR);
-  AdColors.emplace_back(AD_1_COLOR);
-  AdColors.emplace_back(AD_2_COLOR);
-}
+    : Screen(ftxui::ScreenInteractive::Fullscreen()) {}
 
 bool udocs_processor::FtxGenerateView::DoExit() const {
   return DoExit_ && HasFinished;

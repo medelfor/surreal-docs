@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 #include "View.h"
 #include "udocs-processor/cli/ue/UnrealInteraction.h"
@@ -42,7 +43,7 @@ class InitView : public virtual View {
 
   virtual void SelectTarget(const std::string& Target) = 0;
 
-  virtual void SelectSources(const std::vector<int> &Sources) = 0;
+  virtual void SelectSources(const std::set<int> &Sources) = 0;
 
   virtual const std::string& GetSelectedName() const = 0;
 
@@ -54,6 +55,8 @@ class InitView : public virtual View {
 
   virtual std::vector<UnrealInteraction::Source> GetSelectedSources() const = 0;
 
+  virtual std::set<int> GetSelectedSourceIndices() const = 0;
+
   virtual std::optional<UnrealInteraction::UnrealVersion>
       GetSelectedEngineVersion() const = 0;
 
@@ -64,5 +67,7 @@ class InitView : public virtual View {
   virtual void SetDoExportPrivate(bool DoExport) = 0;
 
   virtual bool DoExportPrivate() const = 0;
+
+  ~InitView() override = default;
 };
 }  // namespace udocs_processor

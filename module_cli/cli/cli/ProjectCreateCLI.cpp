@@ -5,6 +5,7 @@
 #include <future> NOLINT()
 #include <thread> NOLINT()
 #include <chrono> NOLINT()
+#include "udocs-processor/cli/cli/util/CliHelper.h"
 
 bool udocs_processor::ProjectCreateCLI::CreateProject(
     const Arguments &Args) const {
@@ -20,16 +21,15 @@ bool udocs_processor::ProjectCreateCLI::CreateProject(
         ProjectCreateCommand::CreateRequest Request = MakeRequest(Args);
 
         Command->Create(Request);
+        CliView->ReportSuccess();
       } catch (const std::exception& Exc) {
         Success = false;
         Telemetry->ReportFail(TELEMETRY_COMMAND_NAME, Exc.what());
         l->error("Exception in project create thread: {}", Exc.what());
-        CliView->SetFinished(true);
+        CliView->ReportError(Exc.what());
       }
 
-      if (Success) {
-        CliView->SetFinished(true);
-      }
+      CliView->SetFinished(true);
     });
 
   auto ViewThread = std::thread(
@@ -54,7 +54,14 @@ bool udocs_processor::ProjectCreateCLI::CreateProject(
 udocs_processor::ProjectCreateCommand::CreateRequest
     udocs_processor::ProjectCreateCLI::MakeRequest(
         const Arguments& Args) const {
-  return {};
+  ProjectCreateCommand::CreateRequest Request;
+  Request.Token = Token->LoadToken(Args.Source);
+
+  CliHelper::Location Location = CliHelper::ParseLocation(Args.Location);
+  Request.Project = Location.Project;
+  Request.Organization = Location.Organization;
+
+  return Request;
 }
 
 void udocs_processor::ProjectCreateCLI::SetView(
@@ -65,8 +72,9 @@ void udocs_processor::ProjectCreateCLI::SetView(
 udocs_processor::ProjectCreateCLI::ProjectCreateCLI(
   std::shared_ptr<spdlog::sinks::sink> Sink,
   std::unique_ptr<ProjectCreateCommand> Command,
+  std::shared_ptr<TokenLoader> Token,
   std::shared_ptr<BasicTelemetry> Telemetry)
-    : Command(std::move(Command)), Telemetry(Telemetry) {
+    : Command(std::move(Command)), Telemetry(Telemetry), Token(Token) {
   l = spdlog::get(LOGGER_NAME);
   if (!l) {
     l = std::make_shared<spdlog::logger>(LOGGER_NAME);

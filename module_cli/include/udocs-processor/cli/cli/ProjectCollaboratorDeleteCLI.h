@@ -11,14 +11,21 @@
 #include "udocs-processor/cli/commands/ProjectCollaboratorDeleteCommand.h"
 #include "udocs-processor/cli/views/ProjectCollaboratorDeleteView.h"
 #include "udocs-processor/telemetry/BasicTelemetry.h"
+#include "udocs-processor/cli/cli/token/TokenLoader.h"
 
 namespace udocs_processor {
 class ProjectCollaboratorDeleteCLI {
  public:
-  struct Arguments {};
+  struct Arguments {
+    std::string Location;
+    std::string Email;
+    bool PreConfirmation = false;
+    TokenLoader::TokenSource Source = TokenLoader::TokenSource::NO_PREFERENCE;
+  };
 
   ProjectCollaboratorDeleteCLI(std::shared_ptr<spdlog::sinks::sink> Sink,
       std::unique_ptr<ProjectCollaboratorDeleteCommand> Command,
+      std::shared_ptr<TokenLoader> Token,
       std::shared_ptr<BasicTelemetry> Telemetry);
 
   bool DeleteProjectCollaborator(const Arguments& Args) const;
@@ -41,5 +48,6 @@ class ProjectCollaboratorDeleteCLI {
   std::shared_ptr<spdlog::logger> l;
 
   std::shared_ptr<BasicTelemetry> Telemetry;
+  std::shared_ptr<TokenLoader> Token;
 };
 }  // namespace udocs_processor

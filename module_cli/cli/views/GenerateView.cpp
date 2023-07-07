@@ -3,6 +3,7 @@
 #include "udocs-processor/cli/views/GenerateView.h"
 
 udocs_processor::GenerateView::GenerateView() {
+  StatusToString.insert(std::make_pair(Status::PREDEPLOY, STATUS_PREDEPLOY));
   StatusToString.insert(std::make_pair(Status::PREPARING, STATUS_PREPARING));
   StatusToString.insert(std::make_pair(Status::COMPILING, STATUS_COMPILING));
   StatusToString.insert(std::make_pair(Status::EXTRACTING_FROM_BP,
@@ -19,6 +20,10 @@ udocs_processor::GenerateView::GenerateView() {
       STATUS_EXTRACTING_SERIALIZING_IMAGES));
   StatusToString.insert(std::make_pair(Status::SERIALIZING_HTML,
       STATUS_EXTRACTING_SERIALIZING_HTML));
+  StatusToString.insert(std::make_pair(Status::DEPLOYING,
+      STATUS_EXTRACTING_DEPLOYING));
+  StatusToString.insert(std::make_pair(Status::PURGING_OUT,
+      STATUS_EXTRACTING_PURGING_OUT));
   StatusToString.insert(std::make_pair(Status::FINALIZING,
       STATUS_EXTRACTING_FINALIZING));
   StatusToString.insert(std::make_pair(Status::CLEANING_UP,
@@ -36,4 +41,8 @@ std::string udocs_processor::GenerateView::GetStatusString(
   }
 
   return "";
+}
+
+void udocs_processor::GenerateView::SetAds(std::vector<AdsManager::Ad> Ads) {
+  this->Ads = std::move(Ads);
 }

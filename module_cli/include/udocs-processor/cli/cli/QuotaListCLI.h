@@ -11,14 +11,18 @@
 #include "udocs-processor/cli/commands/QuotaListCommand.h"
 #include "udocs-processor/cli/views/QuotaListView.h"
 #include "udocs-processor/telemetry/BasicTelemetry.h"
+#include "udocs-processor/cli/cli/token/TokenLoader.h"
 
 namespace udocs_processor {
 class QuotaListCLI {
  public:
-  struct Arguments {};
+  struct Arguments {
+    TokenLoader::TokenSource Source = TokenLoader::TokenSource::NO_PREFERENCE;
+  };
 
   QuotaListCLI(std::shared_ptr<spdlog::sinks::sink> Sink,
       std::unique_ptr<QuotaListCommand> Command,
+      std::shared_ptr<TokenLoader> Token,
       std::shared_ptr<BasicTelemetry> Telemetry);
 
   bool ListQuota(const Arguments& Args) const;
@@ -39,5 +43,6 @@ class QuotaListCLI {
   std::shared_ptr<spdlog::logger> l;
 
   std::shared_ptr<BasicTelemetry> Telemetry;
+  std::shared_ptr<TokenLoader> Token;
 };
 }  // namespace udocs_processor

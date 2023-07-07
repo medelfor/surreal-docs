@@ -32,8 +32,12 @@ class FtxGenerateView : public GenerateView, public FtxView {
 
   void Start() override;
 
+  ~FtxGenerateView() override = default;
+
  private:
   ftxui::Elements Split(const std::string& Text) const;
+
+  std::string AdIcon(int Ad) const;
 
   std::string AdText(int Ad) const;
 
@@ -56,37 +60,8 @@ class FtxGenerateView : public GenerateView, public FtxView {
   std::string ErrorMessage;
   Status Status_ = Status::PREPARING;
 
-  std::vector<std::string> AdTexts;
-  std::vector<ftxui::Color> AdColors;
-
-  static constexpr int AD_FRAMES = 50;
-  const ftxui::Color AD_0_COLOR = ftxui::Color::DeepPink2;
-  const ftxui::Color AD_1_COLOR = ftxui::Color::Turquoise2;
-  const ftxui::Color AD_2_COLOR = ftxui::Color::Purple3;
+  static constexpr int AD_FRAMES = 60;
 
   static constexpr const char PRESS_TO_EXIT[] = ". Press ESC to exit";
-
-  static constexpr const char AD_0[] =
-      "Need a cloud to make your docs available "
-      "on the internet? Try Surreal Cloud starting "
-      "at $17/month. More info at medelfor.com";
-  static constexpr const char AD_1[] =
-      "Need a cloud to share your docs privately with the team? "
-      "Try Surreal Cloud+ starting "
-      "at $25/month. More info at medelfor.com";
-  static constexpr const char AD_2[] =
-      "Need an on-premises solution to share your docs within organization? "
-      "Try Surreal Cloud Pro starting "
-      "at $70/month. More info at medelfor.com";
-
-  static constexpr const char AD_IMAGE[] =
-R"(  ▄▄▄▄▄▄
-▄████████▄
-██████████
- ▀██████▀
-█▄      ▄█
- ▀██████▀
-█▄      ▄█
- ▀██████▀ )";
 };
 }  // namespace udocs_processor

@@ -14,8 +14,25 @@ class FtxOrganizationDeleteView : public virtual OrganizationDeleteView,
  public:
   FtxOrganizationDeleteView();
 
+  ~FtxOrganizationDeleteView() override = default;
+
+  void Init() override;
+
+  void ReportProgress() override;
+
+  void ReportSuccess() override;
+
+  bool Confirm() override;
+
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* CONFIRMATION_MESSAGE = "Are you sure you want "
+      "to delete the organization? It'll permanently delete all the documents "
+      "within it";
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The organization was successfuly deleted";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Deleting the organization...";
+  static constexpr const char* GATHERING_INFO_MESSAGE =
+      "Confirming choice...";
 };
 }  // namespace udocs_processor

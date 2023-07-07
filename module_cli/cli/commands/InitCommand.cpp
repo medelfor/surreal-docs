@@ -75,7 +75,8 @@ void udocs_processor::InitCommand::InstallPlugin(
       std::filesystem::copy_options::overwrite_existing |
       std::filesystem::copy_options::recursive);
 
-  Ue->EnablePlugin(ProjectDir, UNREALISTIC_DOCS_PLUGIN);
+  // SD-1192
+  // Ue->EnablePlugin(ProjectDir, UNREALISTIC_DOCS_PLUGIN);
 }
 
 void udocs_processor::InitCommand::SaveProject(const SurrealProject &Project,

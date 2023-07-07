@@ -10,5 +10,8 @@
 namespace udocs_processor {
 class TokenCreateView : public virtual SimpleView {
  public:
+  virtual void ShowToken(const std::string& Token, uint64_t ExpiresOn) = 0;
+
+  ~TokenCreateView() override = default;
 };
 }  // namespace udocs_processor

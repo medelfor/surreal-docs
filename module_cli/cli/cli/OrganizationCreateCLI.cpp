@@ -20,16 +20,15 @@ bool udocs_processor::OrganizationCreateCLI::CreateOrganization(
         OrganizationCreateCommand::CreateRequest Request = MakeRequest(Args);
 
         Command->Create(Request);
+        CliView->ReportSuccess();
       } catch (const std::exception& Exc) {
         Success = false;
         Telemetry->ReportFail(TELEMETRY_COMMAND_NAME, Exc.what());
         l->error("Exception in organization create thread: {}", Exc.what());
-        CliView->SetFinished(true);
+        CliView->ReportError(Exc.what());
       }
 
-      if (Success) {
-        CliView->SetFinished(true);
-      }
+      CliView->SetFinished(true);
     });
 
   auto ViewThread = std::thread(
@@ -54,7 +53,7 @@ bool udocs_processor::OrganizationCreateCLI::CreateOrganization(
 udocs_processor::OrganizationCreateCommand::CreateRequest
     udocs_processor::OrganizationCreateCLI::MakeRequest(
         const Arguments& Args) const {
-  return {};
+  return {Args.Name, Token->LoadToken(Args.Source)};
 }
 
 void udocs_processor::OrganizationCreateCLI::SetView(
@@ -65,8 +64,9 @@ void udocs_processor::OrganizationCreateCLI::SetView(
 udocs_processor::OrganizationCreateCLI::OrganizationCreateCLI(
   std::shared_ptr<spdlog::sinks::sink> Sink,
   std::unique_ptr<OrganizationCreateCommand> Command,
+  std::shared_ptr<TokenLoader> Token,
   std::shared_ptr<BasicTelemetry> Telemetry)
-    : Command(std::move(Command)), Telemetry(Telemetry) {
+    : Command(std::move(Command)), Telemetry(Telemetry), Token(Token) {
   l = spdlog::get(LOGGER_NAME);
   if (!l) {
     l = std::make_shared<spdlog::logger>(LOGGER_NAME);

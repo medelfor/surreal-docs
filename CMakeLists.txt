@@ -33,6 +33,8 @@ find_package(CLI11 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(gRPC REQUIRED)
 find_package(termcolor REQUIRED)
+find_package(cryptopp REQUIRED)
+find_package(date REQUIRED)
 
 if(NOT DEFINED DO_BUILD_TESTS)
     set(DO_BUILD_TESTS ON)
@@ -57,12 +59,13 @@ endif()
 #LIBRARY PART
 if (PLATFORM_WIN64 AND NOT SKIP_CLI)
     add_subdirectory(module_cli)
+    add_subdirectory(module_telemetry)
 endif ()
+
 add_subdirectory(module_processor)
 add_subdirectory(module_serializer)
 add_subdirectory(module_base)
 add_subdirectory(module_report)
-add_subdirectory(module_telemetry)
 add_subdirectory(module_util)
 add_subdirectory(module_cloud)
 

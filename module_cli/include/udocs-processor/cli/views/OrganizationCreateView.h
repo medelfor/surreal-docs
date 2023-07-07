@@ -10,5 +10,8 @@
 namespace udocs_processor {
 class OrganizationCreateView : public virtual SimpleView {
  public:
+  ~OrganizationCreateView() override = default;
+
+  virtual void ReportSuccess() = 0;
 };
 }  // namespace udocs_processor

@@ -57,8 +57,10 @@ class DocPathBuilder : public Subprocessor {
 
   std::string_view GetName() const override;
 
+  void SetDoObfuscate(bool DoObfuscate);
+
  private:
-  std::string MakeHash(std::string Seed) const;
+  std::string MakeHash(const std::string& Name) const;
 
   template<typename T>
   void AddModuleDocPath(T& Node, bool IsNative);
@@ -146,6 +148,8 @@ class DocPathBuilder : public Subprocessor {
   std::unordered_map<DocPathsCache::IdType, std::string> IdsToPathParts;
   std::unordered_map<DocPathsCache::IdType, std::shared_ptr<DocNode>>
       IdsToNodeParents;
+  std::vector<NativeClassNode*> UInterfaces;
+
   mutable std::shared_ptr<spdlog::logger> l;
   DocPathsCache& DocPathCache;
 
@@ -154,5 +158,8 @@ class DocPathBuilder : public Subprocessor {
 
   std::random_device RandomDevice;
   mutable std::mt19937 Generator;
+
+  std::string ObfuscationSeed;
+  bool DoObfuscate = false;
 };
 }  // namespace udocs_processor

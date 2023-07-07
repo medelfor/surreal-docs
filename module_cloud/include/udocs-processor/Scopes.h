@@ -3,6 +3,13 @@
 #pragma once
 
 namespace udocs_processor {
+// OAuth2
+class SurrealApiScopes {
+ public:
+  static constexpr char TOKENS_WRITE[] = "tokens_write";
+  static constexpr char TOKENS_READ[] = "tokens_read";
+};
+
 // Surreal Cloud Tokens
 class SurrealCloudScopes {
  public:

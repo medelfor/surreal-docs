@@ -97,6 +97,18 @@ class ProjectService {
     std::string Version;
   };
 
+  struct DeployPreCheckRequest {
+    Address Location;
+    std::string Token;
+    std::string Version;
+  };
+
+  struct DeployPreCheckResponse {
+    ApiStatus Status;
+    bool DoesVersionExist = false;
+    std::optional<int64_t> RemainingSpace = 0;
+  };
+
   virtual ApiStatus Create(const CreateProjectRequest& Request) const = 0;
 
   virtual ApiStatus Publish(
@@ -124,5 +136,8 @@ class ProjectService {
 
   virtual ApiStatus CreateVersion(
       const CreateVersionRequest& Request) const = 0;
+
+  virtual DeployPreCheckResponse PerformDeployPreCheck(
+      const DeployPreCheckRequest& Request) const = 0;
 };
 }  // namespace udocs_processor

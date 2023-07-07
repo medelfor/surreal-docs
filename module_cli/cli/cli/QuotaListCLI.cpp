@@ -19,17 +19,16 @@ bool udocs_processor::QuotaListCLI::ListQuota(
       try {
         QuotaListCommand::ListRequest Request = MakeRequest(Args);
 
-        Command->List(Request);
+        auto Quota = Command->List(Request);
+        CliView->ShowQuota(Quota);
       } catch (const std::exception& Exc) {
         Success = false;
         Telemetry->ReportFail(TELEMETRY_COMMAND_NAME, Exc.what());
         l->error("Exception in quota list thread: {}", Exc.what());
-        CliView->SetFinished(true);
+        CliView->ReportError(Exc.what());
       }
 
-      if (Success) {
-        CliView->SetFinished(true);
-      }
+      CliView->SetFinished(true);
     });
 
   auto ViewThread = std::thread(
@@ -54,7 +53,7 @@ bool udocs_processor::QuotaListCLI::ListQuota(
 udocs_processor::QuotaListCommand::ListRequest
     udocs_processor::QuotaListCLI::MakeRequest(
         const Arguments& Args) const {
-  return {};
+  return {Token->LoadToken(Args.Source)};
 }
 
 void udocs_processor::QuotaListCLI::SetView(
@@ -65,8 +64,9 @@ void udocs_processor::QuotaListCLI::SetView(
 udocs_processor::QuotaListCLI::QuotaListCLI(
   std::shared_ptr<spdlog::sinks::sink> Sink,
   std::unique_ptr<QuotaListCommand> Command,
+  std::shared_ptr<TokenLoader> Token,
   std::shared_ptr<BasicTelemetry> Telemetry)
-    : Command(std::move(Command)), Telemetry(Telemetry) {
+    : Command(std::move(Command)), Telemetry(Telemetry), Token(Token) {
   l = spdlog::get(LOGGER_NAME);
   if (!l) {
     l = std::make_shared<spdlog::logger>(LOGGER_NAME);

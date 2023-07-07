@@ -260,12 +260,50 @@ udocs_processor::ApiStatus udocs_processor::ProjectServiceImpl::CreateVersion(
 }
 
 udocs_processor::ProjectServiceImpl::ProjectServiceImpl(
+    std::shared_ptr<spdlog::sinks::sink> Sink,
     std::shared_ptr<grpc::Channel> Channel) {
   Project = std::make_unique<surapi::Project::Stub>(Channel);
   l = spdlog::get(LOGGER_NAME);
+  if (!l) {
+    l = std::make_shared<spdlog::logger>(LOGGER_NAME);
+    if (Sink) {
+      l->sinks().emplace_back(Sink);
+    }
+  }
 
   ScopesToScopes.insert(std::make_pair(PublishProjectRequest::Scope::PRIVATE,
       surapi::ProjectScope::PRIVATE));
   ScopesToScopes.insert(std::make_pair(PublishProjectRequest::Scope::PUBLIC,
       surapi::ProjectScope::PUBLIC));
+}
+
+udocs_processor::ProjectService::DeployPreCheckResponse
+udocs_processor::ProjectServiceImpl::PerformDeployPreCheck(
+    const DeployPreCheckRequest &Request) const {
+  grpc::ClientContext Context;
+  surapi::DeployPreCheckRequest PreCheckRequest;
+  PreCheckRequest.set_token(Request.Token);
+  auto* Location = new surapi::Address;
+  Location->set_organization(Request.Location.Organization);
+  Location->set_project(Request.Location.Project);
+  PreCheckRequest.set_allocated_location(Location);
+  PreCheckRequest.set_version(Request.Version);
+
+  surapi::DeployPreCheckResponse Response;
+  grpc::Status Status = Project->PerformDeployPreCheck(
+      &Context, PreCheckRequest, &Response);
+  if (!Status.ok()) {
+    return {{ApiStatus::GRPC_LAYER_FAILED,
+        fmt::format("Couldn't process RPC call (pre deploy check) {}",
+            Status.error_code())}};
+  }
+
+  DeployPreCheckResponse Result;
+  Result.Status = {Response.status().code(), Response.status().message()};
+  Result.DoesVersionExist = Response.doesversionexist();
+  if (Response.has_remainingspace()) {
+    Result.RemainingSpace = Response.remainingspace();
+  }
+
+  return Result;
 }

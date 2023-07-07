@@ -2,10 +2,8 @@
 
 #include "udocs-processor/services/impl/DocumentServiceImpl.h"
 
-udocs_processor::ApiStatus udocs_processor::DocumentServiceImpl::Add(
+void udocs_processor::DocumentServiceImpl::Add(
     AddDocumentRequest &Request) {
-  grpc::ClientContext Context;
-  surapi::AddDocumentRequest AddRequest;
   AddRequest.set_token(Request.Token);
   AddRequest.set_project(Request.Project);
   AddRequest.set_organization(Request.Organization);
@@ -29,25 +27,27 @@ udocs_processor::ApiStatus udocs_processor::DocumentServiceImpl::Add(
     throw std::invalid_argument{"Invalid type of document"};
   }
 
-
-  api::Status Response;
   if (!Writer) {
     Writer = Document->Add(&Context, &Response);
   }
 
   bool Success = Writer->Write(AddRequest);
   if (!Success) {
-    l->error("Write returned false when adding document ({}): {}",
-        Response.code(), Response.message());
+    throw std::runtime_error{"Couldn't write an entry to the cloud"};
   }
-
-  return {Response.code(), Response.message()};
 }
 
 udocs_processor::DocumentServiceImpl::DocumentServiceImpl(
+    std::shared_ptr<spdlog::sinks::sink> Sink,
     std::shared_ptr<grpc::Channel> Channel) {
   Document = std::make_unique<surapi::Document::Stub>(Channel);
   l = spdlog::get(LOGGER_NAME);
+  if (!l) {
+    l = std::make_shared<spdlog::logger>(LOGGER_NAME);
+    if (Sink) {
+      l->sinks().emplace_back(Sink);
+    }
+  }
 
   FormatsToFormats.insert(std::make_pair(ManifestEntry::Format::JSON_V1,
       surapi::DocumentFormat::JSON_V1));
@@ -73,10 +73,14 @@ udocs_processor::DocumentServiceImpl::DocumentServiceImpl(
 udocs_processor::ApiStatus udocs_processor::DocumentServiceImpl::Finish() {
   if (!Writer) throw std::runtime_error{"Writer isn't initialized"};
 
+  bool Ok = Writer->WritesDone();
+  l->info("Writes done {}", Ok);
   grpc::Status Status = Writer->Finish();
   if (!Status.ok()) {
     return {ApiStatus::GRPC_LAYER_FAILED,
         fmt::format("Couldn't process RPC call (add document) {}",
             Status.error_code())};
   }
+
+  return {Response.code(), Response.message()};
 }

@@ -30,6 +30,8 @@ std::vector<udocs_processor::ManifestEntry>
     udocs_processor::Generator::Generate(
         const GenerationRequest& Request,
         const CallbackType& StageCallback) const {
+  l->info("Out dir: {}", Request.OutDirectory);
+
   if (Request.Format != GenerationRequest::ExportFormat::DEPLOYMENT &&
       Request.Format != GenerationRequest::ExportFormat::HTML) {
     StageCallback(Status::ERROR, "Unsupported export format");
@@ -106,6 +108,7 @@ std::vector<udocs_processor::ManifestEntry>
   std::unique_ptr<NodeHasher> Hasher2 = std::make_unique<NodeHasher>();
   std::unique_ptr<DocPathBuilder> Builder =
     std::make_unique<DocPathBuilder>(*Cache, std::move(Hasher2));
+  Builder->SetDoObfuscate(!Request.DoDeploy);
   std::unique_ptr<ExportPolicy> ExportPolicy_ =
     std::make_unique<ExportPolicy>(*Cache);
   ExportPolicy_->SetDoExportPrivate(Request.DoExportPrivate);
@@ -122,7 +125,7 @@ std::vector<udocs_processor::ManifestEntry>
 
   std::unique_ptr<UFunctionHTMLSerializer> FunctionSerializer =
           std::make_unique<UFunctionHTMLSerializer>();
-  FunctionSerializer->SetIsTrial(IS_TRIAL);
+  FunctionSerializer->SetIsTrial(!Request.DoDeploy);
   FunctionSerializer->SetFunctionTemplate(FunctionTemplateBuffer.str());
   FunctionSerializer->SetResourcesPath(ResourcesPath);
 
@@ -136,7 +139,7 @@ std::vector<udocs_processor::ManifestEntry>
 
   std::unique_ptr<udocs_processor::IntegrityCheck> Checker =
       std::make_unique<udocs_processor::IntegrityCheck>();
-  Checker->SetResourcesPath(ResourcesPath);
+  Checker->SetInstallPath(InstallPath);
 
   std::unique_ptr<UTypeToStringSerializer> TypeToStringSerializer =
     std::make_unique<UTypeMarkdownSerializer>(*Cache);
@@ -165,15 +168,21 @@ std::vector<udocs_processor::ManifestEntry>
   Serializer->SetOutputDirectory(Request.OutDirectory);
   Serializer->SetDoBase64EncodeImages(Request.Format ==
     GenerationRequest::ExportFormat::DEPLOYMENT);
-  Serializer->SetHtml2PngPath(ResourcesPath + HTML2PNG_PATH);
+  Serializer->SetHtml2PngPath(BinaryPath);
   JSONDocTreeSerializer* Serializer_ = Serializer.get();
   Processor.SetDocTreeSerializer(std::move(Serializer));
 
   Processor.Process();
 
-  if (Request.Format == GenerationRequest::ExportFormat::HTML) {
-    StageCallback(Status::SERIALIZING_HTML, "");
-    SerializeToHtml(Request, StageCallback, Serializer_->GetManifest());
+  switch (Request.Format) {
+    case GenerationRequest::ExportFormat::HTML:
+      StageCallback(Status::SERIALIZING_HTML, "");
+      SerializeToHtml(Request, StageCallback, Serializer_->GetManifest());
+      break;
+    case GenerationRequest::ExportFormat::DEPLOYMENT:
+      StageCallback(Status::DEPLOYING, "");
+      Deploy(Request, StageCallback, Serializer_->GetManifest());
+      break;
   }
 
   StageCallback(Status::FINALIZING, "");
@@ -212,9 +221,74 @@ void udocs_processor::Generator::CopyResources(
   }
 }
 
+void udocs_processor::Generator::Deploy(const GenerationRequest& Request,
+    const CallbackType& StageCallback,
+    const std::vector<ManifestEntry>& Manifest) const {
+  // purge version
+  if (Request.DoesVersionExist) {
+    l->warn("The version exists, deleting...");
+    ProjectService::DeleteProjectRequest DeleteRequest;
+    DeleteRequest.Location = {Request.Project, Request.Organization};
+    DeleteRequest.Token = Request.Token;
+    DeleteRequest.Version = Request.Version;
+    DeleteRequest.DeleteProject = false;
+
+    ApiStatus Status = Projects->Delete(DeleteRequest);
+    if (Status.GetCode() != ApiStatus::SUCCESS) {
+      l->error("Delete version: {}/{}", Status.GetCode(),
+          Status.GetMessageDescription());
+      throw std::runtime_error{fmt::format("Couldn't delete version: {}",
+          Status.GetMessageDescription())};
+    }
+
+    l->info("Created the `{}` version", Request.Version);
+  }
+
+  l->warn("Creating the version `{}`...", Request.Version);
+  ProjectService::CreateVersionRequest VersionRequest;
+  VersionRequest.Location = {Request.Project, Request.Organization};
+  VersionRequest.Token = Request.Token;
+  VersionRequest.Version = Request.Version;
+
+  ApiStatus Status = Projects->CreateVersion(VersionRequest);
+  if (Status.GetCode() != ApiStatus::SUCCESS) {
+    l->error("Create version: {}/{}", Status.GetCode(),
+        Status.GetMessageDescription());
+    throw std::runtime_error{fmt::format("Couldn't create version: {}",
+        Status.GetMessageDescription())};
+  }
+
+  l->info("Created the `{}` version", Request.Version);
+
+  for (auto& Entry : Manifest) {
+    DocumentService::AddDocumentRequest AddRequest;
+    AddRequest.Project = Request.Project;
+    AddRequest.Organization = Request.Organization;
+    AddRequest.Version = Request.Version;
+    AddRequest.Token = Request.Token;
+
+    std::ifstream ContentStream(Entry.GetFileName());
+    if (!ContentStream.good()) {
+      l->error("Couldn't open(r): {}", Entry.GetFileName());
+      break;
+    }
+    std::stringstream ContentStreamBuffer;
+    ContentStreamBuffer << ContentStream.rdbuf();
+
+    AddRequest.Content = ContentStreamBuffer.str();
+    AddRequest.Type = Entry.GetType();
+    AddRequest.Format = Entry.GetFormat();
+    AddRequest.DocPath = Entry.GetDocPath();
+
+    Documents->Add(AddRequest);
+  }
+
+  Documents->Finish();
+}
+
 void udocs_processor::Generator::SerializeToHtml(
     const GenerationRequest& Request, const CallbackType& StageCallback,
-    const std::vector<udocs_processor::ManifestEntry>& Manifest) const {
+    const std::vector<ManifestEntry>& Manifest) const {
   Renderer->SetResourcesPath(ResourcesPath);
 
   nlohmann::json Index;
@@ -234,6 +308,10 @@ void udocs_processor::Generator::SerializeToHtml(
       case ManifestEntry::Type::PAGE:
       {
         std::ifstream ContentStream(Entry.GetFileName());
+        if (!ContentStream.good()) {
+          l->error("Couldn't open(r): {}", Entry.GetFileName());
+          break;
+        }
         std::stringstream ContentStreamBuffer;
         ContentStreamBuffer << ContentStream.rdbuf();
         std::string Result = Renderer->Render(ContentStreamBuffer.str(), Index,
@@ -245,8 +323,12 @@ void udocs_processor::Generator::SerializeToHtml(
         }
         std::ofstream Ofstream(Request.OutDirectory + DIRECTORY_SEPARATOR +
             Name + HTML_EXTENSION, std::ofstream::trunc);
-        Ofstream.write(Result.c_str(), Result.size());
-        l->info("Serialized: {}", Name);
+        if (Ofstream.good()) {
+          Ofstream.write(Result.c_str(), Result.size());
+          l->info("Serialized: {}", Name);
+        } else {
+          l->error("Couldn't open(w): {}", Name);
+        }
         break;
       }
       case ManifestEntry::Type::RESOURCE:
@@ -275,13 +357,25 @@ void udocs_processor::Generator::SetResourcesPath(std::string ResourcesPath) {
   this->ResourcesPath = StringHelper::Normalize(ResourcesPath);
 }
 
+void udocs_processor::Generator::SetBinaryPath(std::string BinaryPath) {
+  this->BinaryPath = StringHelper::Normalize(BinaryPath);
+}
+
+void udocs_processor::Generator::SetInstallPath(std::string InstallPath) {
+  this->InstallPath = StringHelper::Normalize(InstallPath);
+}
+
+
 void udocs_processor::Generator::SetRenderer(
     std::unique_ptr<UDocsDocumentRenderer> Renderer) {
   this->Renderer = std::move(Renderer);
 }
 
-udocs_processor::Generator::Generator(std::shared_ptr<spdlog::sinks::sink> Sink)
-  : Sink(Sink) {
+udocs_processor::Generator::Generator(
+    std::unique_ptr<DocumentService> Documents,
+    std::shared_ptr<ProjectService> Projects,
+    std::shared_ptr<spdlog::sinks::sink> Sink)
+    : Documents(std::move(Documents)), Projects(Projects), Sink(Sink) {
   ResourcesToCopy.emplace_back(THEME_CSS);
   ResourcesToCopy.emplace_back(THEME_JS);
 

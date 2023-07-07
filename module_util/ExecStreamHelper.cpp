@@ -26,3 +26,25 @@ udocs_processor::ExecStreamHelper::Run(
 
   return std::move(Result);
 }
+
+udocs_processor::ExecStreamHelper::ProcessResult
+udocs_processor::ExecStreamHelper::RunNoEscape(
+    const std::vector<std::string>& Arguments) {
+  if (Arguments.empty()) throw std::invalid_argument{"No command"};
+
+  boost::asio::io_service IoService;
+  std::future<std::string> Data;
+
+  boost::process::child Child(Arguments,
+    boost::process::std_in.close(),
+    (boost::process::std_out & boost::process::std_err) > Data, IoService);
+
+  IoService.run();
+  Child.wait();
+
+  ProcessResult Result;
+  Result.Output = Data.get();
+  Result.ExitCode = Child.exit_code();
+
+  return std::move(Result);
+}

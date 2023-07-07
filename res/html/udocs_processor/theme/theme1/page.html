@@ -312,6 +312,11 @@
               <img alt="Medelfor logo" src="{{ resource("misc/graphics/udocs_processor/theme/Medelfor.svg")}}"/>
             </a>
             {% endif %}
+            {% if d.is_local %}
+            <div style="padding: 1em; background-color: red;height: 1em;color: white; display: flex; align-items: center; justify-content: center;">
+              This page is not hosted in&nbsp;<a href="https://medelfor.com" target="_blank" style="color: white; text-decoration-color: white;">Surreal Cloud</a>
+            </div>
+            {% endif %}
           </div>
         </div>
       </footer>

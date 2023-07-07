@@ -5,6 +5,7 @@
 #include <future> NOLINT()
 #include <thread> NOLINT()
 #include <chrono> NOLINT()
+#include "udocs-processor/cli/cli/util/CliHelper.h"
 
 bool udocs_processor::GenerateCLI::Generate(const Arguments &Args) const {
   Telemetry->ReportInit(TELEMETRY_COMMAND_NAME);
@@ -96,7 +97,7 @@ udocs_processor::GenerateCommand::GenerateRequest
 
   GenerateCommand::GenerateRequest Request;
   Request.OutDirectory = Args.OutDirectory;
-  Request.Format = Args.DoDeploy
+  Request.Format = Args.DeployLocation
       ? GenerateCommand::GenerateRequest::ExportFormat::DEPLOYMENT
       : GenerateCommand::GenerateRequest::ExportFormat::HTML;
   Request.DoExportPrivate = Project->DoExportPrivate;
@@ -112,6 +113,17 @@ udocs_processor::GenerateCommand::GenerateRequest
   Request.SurDocsDirectory = SURDOCS_DIRECTORY;
   Request.ProjectDirectory = CURRENT_DIRECTORY;
   Request.DoUseCmd = Args.IsInteractive;
+  Request.Version = Project->Version;
+  Request.DoCleanOut = Args.DoCleanOut;
+
+  if (Args.DeployLocation) {
+    CliHelper::Location Location = CliHelper::ParseLocation(
+        *Args.DeployLocation);
+    Request.Project = Location.Project;
+    Request.Organization = Location.Organization;
+    Request.DoDeploy = true;
+    Request.Token = Token->LoadToken(Args.Source);
+  }
 
   return Request;
 }
@@ -122,11 +134,12 @@ udocs_processor::GenerateCLI::GenerateCLI(
   std::unique_ptr<GenerateView> InteractiveView,
   std::unique_ptr<GenerateView> NonInteractiveView,
   std::shared_ptr<SurrealLoader> Loader,
+  std::shared_ptr<TokenLoader> Token,
   std::shared_ptr<BasicTelemetry> Telemetry)
     : Command(std::move(Command)),
     InteractiveView(std::move(InteractiveView)),
     NonInteractiveView(std::move(NonInteractiveView)),
-    Loader(Loader), Telemetry(Telemetry) {
+    Loader(Loader), Telemetry(Telemetry), Token(Token) {
   l = spdlog::get(LOGGER_NAME);
   if (!l) {
     l = std::make_shared<spdlog::logger>(LOGGER_NAME);
@@ -137,6 +150,13 @@ udocs_processor::GenerateCLI::GenerateCLI(
 
   GenerateStatusToStatus.insert(std::make_pair(
       GenerateCommand::Status::COMPILING, GenerateView::Status::COMPILING));
+  GenerateStatusToStatus.insert(std::make_pair(
+      GenerateCommand::Status::PURGING_OUT_DIR,
+      GenerateView::Status::PURGING_OUT));
+  GenerateStatusToStatus.insert(std::make_pair(
+      GenerateCommand::Status::PREDEPLOYING, GenerateView::Status::PREDEPLOY));
+  GenerateStatusToStatus.insert(std::make_pair(
+      GenerateCommand::Status::DEPLOYING, GenerateView::Status::DEPLOYING));
   GenerateStatusToStatus.insert(std::make_pair(
       GenerateCommand::Status::EXTRACTING_FROM_BP,
       GenerateView::Status::EXTRACTING_FROM_BP));
@@ -156,6 +176,8 @@ udocs_processor::GenerateCLI::GenerateCLI(
   GenerateStatusToStatus.insert(std::make_pair(
       GenerateCommand::Status::SERIALIZING_HTML,
       GenerateView::Status::SERIALIZING_HTML));
+  GenerateStatusToStatus.insert(std::make_pair(
+      GenerateCommand::Status::DEPLOYING, GenerateView::Status::DEPLOYING));
   GenerateStatusToStatus.insert(std::make_pair(
       GenerateCommand::Status::FINALIZING, GenerateView::Status::FINALIZING));
   GenerateStatusToStatus.insert(std::make_pair(

@@ -70,6 +70,8 @@ add_library(${PROJECT_NAME} SHARED
         include/udocs-processor/services/DocumentServiceFactory.h
         services/impl/DocumentServiceFactoryImpl.cpp
         include/udocs-processor/services/impl/DocumentServiceFactoryImpl.h
+        grpc/grpc.cpp
+        include/udocs-processor/grpc/grpc.h
         )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "M-UDocs-Cloud")

@@ -1,19 +1,37 @@
-{% if years == 1 %}
-one year ago
-{% else if years > 1 %}
-{{ years }} years ago
-{% else if months == 1 %}
-one month ago
-{% else if months > 1 %}
-{{ months }} months ago
-{% else if weeks == 1 %}
-one week ago
-{% else if weeks > 1 %}
-{{ weeks }} weeks ago
-{% else if days == 1 %}
-yesterday
-{% else if days > 1 %}
-{{ days }} days ago
-{% else if days == 0 %}
-today
+{% if local %}
+    {{ day }}
+    {% if month == 1 %}January
+    {% else if month == 2 %}February
+    {% else if month == 3 %}March
+    {% else if month == 4 %}April
+    {% else if month == 5 %}May
+    {% else if month == 6 %}June
+    {% else if month == 7 %}July
+    {% else if month == 8 %}August
+    {% else if month == 9 %}September
+    {% else if month == 10 %}October
+    {% else if month == 11 %}November
+    {% else if month == 12 %}December
+    {% endif %}
+    {{ year }}
+{% else %}
+    {% if years == 1 %}
+    one year ago
+    {% else if years > 1 %}
+    {{ years }} years ago
+    {% else if months == 1 %}
+    one month ago
+    {% else if months > 1 %}
+    {{ months }} months ago
+    {% else if weeks == 1 %}
+    one week ago
+    {% else if weeks > 1 %}
+    {{ weeks }} weeks ago
+    {% else if days == 1 %}
+    yesterday
+    {% else if days > 1 %}
+    {{ days }} days ago
+    {% else if days == 0 %}
+    today
+    {% endif %}
 {% endif %}

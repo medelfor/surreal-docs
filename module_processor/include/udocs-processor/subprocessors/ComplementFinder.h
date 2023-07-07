@@ -68,6 +68,8 @@ class ComplementFinder : public Subprocessor {
   void After() override;
 
  private:
+  void PostProcessNativeInterfaces();
+
   template<typename N, typename B>
   bool SetCounterparts(B& BlueprintEntity,
       const std::string& Postfix, const std::string& Prefix,
@@ -172,6 +174,7 @@ class ComplementFinder : public Subprocessor {
       BpFunctionWithSetupInterfaceImplementations;
   std::vector<DocsPageNode*> NonCanonicalPages;
   std::unordered_map<std::string, DocsPageNode*> CanonicalPages;
+  std::set<NativeClassNode*> UInterfaces;
   std::shared_ptr<spdlog::logger> l;
   IdGenerator &IdGen;
 };

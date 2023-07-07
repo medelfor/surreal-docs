@@ -10,5 +10,8 @@
 namespace udocs_processor {
 class ProjectCollaboratorListView : public virtual SimpleView {
  public:
+  virtual void ShowCollaboratos(std::vector<std::string> Collaborators) = 0;
+
+  ~ProjectCollaboratorListView() override = default;
 };
 }  // namespace udocs_processor

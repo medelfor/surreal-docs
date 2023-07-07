@@ -12,10 +12,18 @@ namespace udocs_processor {
 class FtxProjectCreateView : public virtual ProjectCreateView,
     public virtual FtxSimpleView {
  public:
-  FtxProjectCreateView();
+  FtxProjectCreateView() = default;
+
+  void Init() override;
+
+  void ReportSuccess() override;
+
+  ~FtxProjectCreateView() override = default;
 
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The project was successfuly created";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Creating the project...";
 };
 }  // namespace udocs_processor

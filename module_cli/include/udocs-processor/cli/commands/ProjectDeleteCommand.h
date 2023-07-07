@@ -4,13 +4,22 @@
 
 #include <spdlog/logger.h>
 #include <memory>
+#include <string>
+#include "udocs-processor/services/ProjectService.h"
 
 namespace udocs_processor {
 class ProjectDeleteCommand {
  public:
-  struct DeleteRequest {};
+  struct DeleteRequest {
+    std::string Organization;
+    std::string Project;
+    std::string Token;
+    std::optional<std::string> Version;
+    bool DeleteProject = false;
+  };
 
-  explicit ProjectDeleteCommand(std::shared_ptr<spdlog::sinks::sink> Sink);
+  ProjectDeleteCommand(std::shared_ptr<ProjectService> Service,
+      std::shared_ptr<spdlog::sinks::sink> Sink);
 
   void Delete(const DeleteRequest& Request) const;
 
@@ -18,5 +27,6 @@ class ProjectDeleteCommand {
   static constexpr const char* LOGGER_NAME = "project-delete";
 
   std::shared_ptr<spdlog::logger> l;
+  std::shared_ptr<ProjectService> Service;
 };
 }  // namespace udocs_processor

@@ -14,8 +14,16 @@ class FtxOrganizationCreateView : public virtual OrganizationCreateView,
  public:
   FtxOrganizationCreateView();
 
+  ~FtxOrganizationCreateView() override = default;
+
+  void Init() override;
+
+  void ReportSuccess() override;
+
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The organization was successfuly created";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Creating the organization...";
 };
 }  // namespace udocs_processor

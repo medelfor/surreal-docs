@@ -14,8 +14,16 @@ class FtxTokenCreateView : public virtual TokenCreateView,
  public:
   FtxTokenCreateView();
 
+  void ShowToken(const std::string& Token, uint64_t ExpiresOn) override;
+
+  void Init() override;
+
+  ~FtxTokenCreateView() override = default;
+
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char PROGRESS_MESSAGE[] = "Issuing token...";
+  static constexpr const char TOKEN_IS[] = "{}";
+  static constexpr const char TOKEN_SUCCESS_MESSAGE[] =
+      "Token was successfully acquired";
 };
 }  // namespace udocs_processor

@@ -10,5 +10,8 @@
 namespace udocs_processor {
 class ProjectAnnounceView : public virtual SimpleView {
  public:
+  virtual void ReportSuccess() = 0;
+
+  ~ProjectAnnounceView() override = default;
 };
 }  // namespace udocs_processor

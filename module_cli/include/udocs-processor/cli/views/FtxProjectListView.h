@@ -12,10 +12,22 @@ namespace udocs_processor {
 class FtxProjectListView : public virtual ProjectListView,
     public virtual FtxSimpleView {
  public:
-  FtxProjectListView();
+  FtxProjectListView() = default;
+
+  void Init() override;
+
+  void ShowProjects(
+      const std::vector<ProjectService::ProjectData>& Projects) override;
+
+  ~FtxProjectListView() override = default;
 
  private:
-  bool DoExit_ = false;
-  bool HasFinished = false;
+  static constexpr const char* SUCCESS_MESSAGE =
+      "The project(s) were successfuly retrieved";
+  static constexpr const char* PROGRESS_MESSAGE =
+      "Retrieving the projects...";
+  static constexpr const char* PROJECT_FORMAT = " {:<30} [{}]";
+  static constexpr const char* PUBLIC = "public";
+  static constexpr const char* PRIVATE = "private";
 };
 }  // namespace udocs_processor

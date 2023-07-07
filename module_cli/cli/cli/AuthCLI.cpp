@@ -19,16 +19,15 @@ bool udocs_processor::AuthCLI::Auth(const Arguments &Args) const {
         AuthCommand::AuthRequest Request = MakeRequest(Args);
 
         Command->Auth(Request);
+        CliView->ReportSuccess();
       } catch (const std::exception& Exc) {
         Success = false;
         Telemetry->ReportFail(TELEMETRY_COMMAND_NAME, Exc.what());
         l->error("Exception in auth thread: {}", Exc.what());
-        CliView->SetFinished(true);
+        CliView->ReportError(Exc.what());
       }
 
-      if (Success) {
-        CliView->SetFinished(true);
-      }
+      CliView->SetFinished(true);
     });
 
   auto ViewThread = std::thread(
@@ -52,7 +51,7 @@ bool udocs_processor::AuthCLI::Auth(const Arguments &Args) const {
 
 udocs_processor::AuthCommand::AuthRequest
     udocs_processor::AuthCLI::MakeRequest(const Arguments& Args) const {
-  return {};
+  return {Token->LoadToken(TokenLoader::TokenSource::STDINPUT)};
 }
 
 void udocs_processor::AuthCLI::SetView(
@@ -63,8 +62,9 @@ void udocs_processor::AuthCLI::SetView(
 udocs_processor::AuthCLI::AuthCLI(
   std::shared_ptr<spdlog::sinks::sink> Sink,
   std::unique_ptr<AuthCommand> Command,
+  std::shared_ptr<TokenLoader> Token,
   std::shared_ptr<BasicTelemetry> Telemetry)
-    : Command(std::move(Command)), Telemetry(Telemetry) {
+    : Command(std::move(Command)), Telemetry(Telemetry), Token(Token) {
   l = spdlog::get(LOGGER_NAME);
   if (!l) {
     l = std::make_shared<spdlog::logger>(LOGGER_NAME);
