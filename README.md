@@ -184,7 +184,7 @@ contributions made by our users!
 
 ## What we're doing right now
 
-We're in the mode of general maintenance and eventual features implementation.
+Most of our efforts are currently focused on general maintenance, but we also work on new feature implementation as needed.
 
 ## Performance
 
