@@ -96,7 +96,7 @@ In order to deploy your documentation to Surreal Cloud, add the `--deploy` optio
 surdocs generate <output directory> --deploy=<org>/<project>
 ```
 
-Note that this functionality is available for those users only who own an active Surreal Cloud, Surreal Cloud+ or Surreal Cloud Pro subscription. More about Surreal Cloud [here]([docs/surreal-cloud](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/surreal-cloud) "Surreal Cloud").
+Note that this functionality is available for those users only who own an active Surreal Cloud, Surreal Cloud+ or Surreal Cloud Pro subscription. More about Surreal Cloud [here](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/surreal-cloud "Surreal Cloud").
 
 You can find more info that will help you get up to speed on the ["Quickstart"](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/quickstart "Quickstart") page.
 
