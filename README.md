@@ -82,7 +82,7 @@ If `surdocs init` has finished successfully, then please run the next command:
 surdocs generate <output directory>
 ```
 
-It will invoke the generation screen and start generating your documentation.
+It will invoke the generation screen and start generating documentation for your Unreal Engine project.
 You will be able to observe the progress and will see error's details if
 something goes wrong.
 
@@ -159,7 +159,7 @@ circumstances, collect or send to ourselves (or any 3rd parties) neither
 the source code of your project nor the generated documentation[1].
 
 ***
-[1] We do send your documentation (but not source code) to our serves in case you requested deployment of the documentation into [Surreal Cloud](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/surreal-cloud "Surreal Cloud").
+[1] We do send your documentation (but not source code) to our servers in case you've run deployment of the docs to [Surreal Cloud](https://docs.medelfor.com/medelfor/surreal-docs/latest/en-US/docs/surreal-cloud "Surreal Cloud").
 
 ## Build
 
