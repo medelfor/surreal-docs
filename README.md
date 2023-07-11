@@ -10,7 +10,7 @@
 </h4>
 
 ***
-Please take a few minutes to help us improve our software by taking our [brief survey](https://forms.gle/gGojHBSS3o7SrDGC6 "Brief survey") with 15 questions. Your feedback matters!
+If you haven't yet used Surreal Docs, please take our brief [6-question survey](https://forms.gle/5q4CrCMTTXjS9qdA6 "Short survey for those who didn't use Surreal Docs") to help us understand our users better. If you're already familiar with our software, please take our [extended survey](https://forms.gle/gGojHBSS3o7SrDGC6 "Brief survey") with 15 questions to help us improve. Your feedback is valuable to us!
 ***
 
 Surreal Docs is a comprehensive documentation generation system designed specifically for Unreal Engine-powered projects. It generates documentation for both C++ and Blueprint API references, and provides users with the ability to create custom pages using a feature-rich dialect of Markdown. Additionally, Surreal Docs seamlessly integrates with Surreal Cloud, our online documentation hosting platform, allowing users to easily share their documentation with others. Finally, Surreal Docs has a deep understanding of all UE-specific C++ features and Blueprints, what allows it to cleverly interweave C++ and BP entities in the resulting documentation.
